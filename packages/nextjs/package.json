@@ -14,12 +14,14 @@
     "vercel:yolo": "vercel --build-env NEXT_PUBLIC_IGNORE_BUILD_ERROR=true"
   },
   "dependencies": {
+    "@dynamic-labs/ethereum": "^3.0.0-alpha.11",
+    "@dynamic-labs/sdk-react-core": "^3.0.0-alpha.11",
+    "@dynamic-labs/wagmi-connector": "^3.0.0-alpha.11",
     "@heroicons/react": "^2.0.11",
-    "@rainbow-me/rainbowkit": "2.1.2",
     "@tanstack/react-query": "^5.28.6",
     "@uniswap/sdk-core": "^4.0.1",
     "@uniswap/v2-sdk": "^3.0.1",
-    "blo": "^1.0.1",
+    "blo": "^1.2.0",
     "burner-connector": "^0.0.8",
     "daisyui": "4.5.0",
     "next": "^14.0.4",
