@@ -1,4 +1,3 @@
-import { wagmiConnectors } from "./wagmiConnectors";
 import { Chain, createClient, http } from "viem";
 import { hardhat, mainnet } from "viem/chains";
 import { createConfig } from "wagmi";
@@ -14,7 +13,6 @@ export const enabledChains = targetNetworks.find((network: Chain) => network.id 
 
 export const wagmiConfig = createConfig({
   chains: enabledChains,
-  connectors: wagmiConnectors,
   ssr: true,
   client({ chain }) {
     return createClient({
