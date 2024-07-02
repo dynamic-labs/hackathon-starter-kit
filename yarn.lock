@@ -19,6 +19,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@adraffy/ens-normalize@npm:1.10.1":
+  version: 1.10.1
+  resolution: "@adraffy/ens-normalize@npm:1.10.1"
+  checksum: 0836f394ea256972ec19a0b5e78cb7f5bcdfd48d8a32c7478afc94dd53ae44c04d1aa2303d7f3077b4f3ac2323b1f557ab9188e8059978748fdcd83e04a80dcc
+  languageName: node
+  linkType: hard
+
 "@adraffy/ens-normalize@npm:1.9.4":
   version: 1.9.4
   resolution: "@adraffy/ens-normalize@npm:1.9.4"
@@ -1900,7 +1907,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:1.4.0":
+"@noble/hashes@npm:1.4.0, @noble/hashes@npm:^1.3.3":
   version: 1.4.0
   resolution: "@noble/hashes@npm:1.4.0"
   checksum: 8ba816ae26c90764b8c42493eea383716396096c5f7ba6bea559993194f49d80a73c081f315f4c367e51bd2d5891700bcdfa816b421d24ab45b41cb03e4f3342
@@ -2474,6 +2481,33 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@safe-global/api-kit@npm:^2.4.2":
+  version: 2.4.2
+  resolution: "@safe-global/api-kit@npm:2.4.2"
+  dependencies:
+    "@safe-global/protocol-kit": ^4.0.2
+    "@safe-global/safe-core-sdk-types": ^5.0.2
+    ethers: ^6.13.1
+    node-fetch: ^2.7.0
+  checksum: 803f60a07ad2d0889cad3c60444753fd3381edff33d784acd4e83d5fafa7210e29a2d101a041ac917fad5557328d02e489012244adbef4e0d6800a3cd9cee9e6
+  languageName: node
+  linkType: hard
+
+"@safe-global/protocol-kit@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "@safe-global/protocol-kit@npm:4.0.2"
+  dependencies:
+    "@noble/hashes": ^1.3.3
+    "@safe-global/safe-core-sdk-types": ^5.0.2
+    "@safe-global/safe-deployments": ^1.37.0
+    abitype: ^1.0.2
+    ethereumjs-util: ^7.1.5
+    ethers: ^6.13.1
+    semver: ^7.6.2
+  checksum: b522258bb3a9d6a476c5c5eddb70f322b42514d516b13a84372035a9d9b96150c9af3b05ad8b7fb3053bbd656dac3a9b6843c7811364b00d503f828db27399e6
+  languageName: node
+  linkType: hard
+
 "@safe-global/safe-apps-provider@npm:0.18.1":
   version: 0.18.1
   resolution: "@safe-global/safe-apps-provider@npm:0.18.1"
@@ -2491,6 +2525,24 @@ __metadata:
     "@safe-global/safe-gateway-typescript-sdk": ^3.5.3
     viem: ^1.0.0
   checksum: e9d31ed6d9cd2cd9ed71ef5a0e1f6ecfca9f0c62acb9b86a0ddb1b65a609090f2297c4304591ac0518b266a1bcc88d1dad31b0d05e50c7732accccb65adab754
+  languageName: node
+  linkType: hard
+
+"@safe-global/safe-core-sdk-types@npm:^5.0.2":
+  version: 5.0.2
+  resolution: "@safe-global/safe-core-sdk-types@npm:5.0.2"
+  dependencies:
+    abitype: ^1.0.2
+  checksum: a9beacdd32ea4466b84a58979d20944b6b03ae2121a980b091853b8ea18dd3555712c16db4b82344c514a72fe8d1580dd4097caec588fd33be36a282c53f6b66
+  languageName: node
+  linkType: hard
+
+"@safe-global/safe-deployments@npm:^1.37.0":
+  version: 1.37.0
+  resolution: "@safe-global/safe-deployments@npm:1.37.0"
+  dependencies:
+    semver: ^7.6.0
+  checksum: 5454067e6813f8a3dabc2367b554a03cbbea5b710534e492b39dec320bbeff5d4c90f101f04e19bbee1b3b99babf1645c60a04c247e19694860ad04fe958f019
   languageName: node
   linkType: hard
 
@@ -2616,6 +2668,9 @@ __metadata:
     "@dynamic-labs/sdk-react-core": ^3.0.0-alpha.11
     "@dynamic-labs/wagmi-connector": ^3.0.0-alpha.11
     "@heroicons/react": ^2.0.11
+    "@safe-global/api-kit": ^2.4.2
+    "@safe-global/protocol-kit": ^4.0.2
+    "@safe-global/safe-core-sdk-types": ^5.0.2
     "@tanstack/react-query": ^5.28.6
     "@trivago/prettier-plugin-sort-imports": ^4.1.1
     "@types/node": ^17.0.35
@@ -4535,6 +4590,21 @@ __metadata:
     zod:
       optional: true
   checksum: 0986ec822ad279e7ea1d15398f88bad335a58419799f8ba80e3d5712fdd5a2b5858b387a1213d9da31571c3a42d10ca878a463cce11dae1bb17dbe4deeb40db4
+  languageName: node
+  linkType: hard
+
+"abitype@npm:^1.0.2":
+  version: 1.0.5
+  resolution: "abitype@npm:1.0.5"
+  peerDependencies:
+    typescript: ">=5.0.4"
+    zod: ^3 >=3.22.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+    zod:
+      optional: true
+  checksum: 4a4865926e5e8e33e4fab0081a106ce4f627db30b4052fbc449e4707aea6d34d805d46c8d6d0a72234bdd9a2b4900993591515fc299bc57d393181c70dc0c19e
   languageName: node
   linkType: hard
 
@@ -7704,7 +7774,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethereumjs-util@npm:^7.1.4":
+"ethereumjs-util@npm:^7.1.4, ethereumjs-util@npm:^7.1.5":
   version: 7.1.5
   resolution: "ethereumjs-util@npm:7.1.5"
   dependencies:
@@ -7784,6 +7854,21 @@ __metadata:
     tslib: 2.4.0
     ws: 8.5.0
   checksum: 6f0a834b9b9bb31eceda9ac0a841b1061d5e2eefb5d0b042013db1c5abf48fa993ec0a602ae4c64d9e259d495fc01c100cf61f17e928e09eb43f0c7860f2a317
+  languageName: node
+  linkType: hard
+
+"ethers@npm:^6.13.1":
+  version: 6.13.1
+  resolution: "ethers@npm:6.13.1"
+  dependencies:
+    "@adraffy/ens-normalize": 1.10.1
+    "@noble/curves": 1.2.0
+    "@noble/hashes": 1.3.2
+    "@types/node": 18.15.13
+    aes-js: 4.0.0-beta.5
+    tslib: 2.4.0
+    ws: 8.17.1
+  checksum: beef4b6d117f64c369f44be631e0f666b966374eac0cc0446fa7abe114b11d6b3019060022eec65c031f150711f4913d249de507ff3da3204e654635db80a07e
   languageName: node
   linkType: hard
 
@@ -11421,7 +11506,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2.6.1, node-fetch@npm:^2.6.12, node-fetch@npm:^2.6.7":
+"node-fetch@npm:^2.6.1, node-fetch@npm:^2.6.12, node-fetch@npm:^2.6.7, node-fetch@npm:^2.7.0":
   version: 2.7.0
   resolution: "node-fetch@npm:2.7.0"
   dependencies:
@@ -13450,6 +13535,15 @@ __metadata:
   bin:
     semver: bin/semver.js
   checksum: 12d8ad952fa353b0995bf180cdac205a4068b759a140e5d3c608317098b3575ac2f1e09182206bf2eb26120e1c0ed8fb92c48c592f6099680de56bb071423ca3
+  languageName: node
+  linkType: hard
+
+"semver@npm:^7.6.0, semver@npm:^7.6.2":
+  version: 7.6.2
+  resolution: "semver@npm:7.6.2"
+  bin:
+    semver: bin/semver.js
+  checksum: 40f6a95101e8d854357a644da1b8dd9d93ce786d5c6a77227bc69dbb17bea83d0d1d1d7c4cd5920a6df909f48e8bd8a5909869535007f90278289f2451d0292d
   languageName: node
   linkType: hard
 
@@ -15849,6 +15943,21 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 53e991bbf928faf5dc6efac9b8eb9ab6497c69feeb94f963d648b7a3530a720b19ec2e0ec037344257e05a4f35bd9ad04d9de6f289615ffb133282031b18c61c
+  languageName: node
+  linkType: hard
+
+"ws@npm:8.17.1":
+  version: 8.17.1
+  resolution: "ws@npm:8.17.1"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 442badcce1f1178ec87a0b5372ae2e9771e07c4929a3180321901f226127f252441e8689d765aa5cfba5f50ac60dd830954afc5aeae81609aefa11d3ddf5cecf
   languageName: node
   linkType: hard
 
