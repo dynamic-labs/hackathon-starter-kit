@@ -42,5 +42,8 @@
   },
   "engines": {
     "node": ">=18.17.0"
+  },
+  "dependencies": {
+    "@dynamic-labs/viem-utils": "^2.2.8"
   }
 }

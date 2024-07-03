@@ -519,6 +519,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@dynamic-labs/viem-utils@npm:^2.2.8":
+  version: 2.2.8
+  resolution: "@dynamic-labs/viem-utils@npm:2.2.8"
+  peerDependencies:
+    "@dynamic-labs/logger": 2.2.8
+    "@dynamic-labs/types": 2.2.8
+    "@dynamic-labs/utils": 2.2.8
+    "@dynamic-labs/wallet-book": 2.2.8
+    "@dynamic-labs/wallet-connector-core": 2.2.8
+    viem: ^2.7.6
+  checksum: 8768d5dede8f54e6541ab3422d8f02ba64c61cccbbff9fd503c8950675e8131e1db6f4a3d6138e6562c534ed5b72590fce8626c591fcc16be57e95faa4784711
+  languageName: node
+  linkType: hard
+
 "@dynamic-labs/wagmi-connector@npm:^3.0.0-alpha.11":
   version: 3.0.0-alpha.13
   resolution: "@dynamic-labs/wagmi-connector@npm:3.0.0-alpha.13"
@@ -13480,6 +13494,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "se-2@workspace:."
   dependencies:
+    "@dynamic-labs/viem-utils": ^2.2.8
     husky: ^8.0.1
     lint-staged: ^13.0.3
   languageName: unknown
