@@ -8,12 +8,15 @@ interface SafeDeploymentParams {
 }
 
 export async function deploySafe({ provider, signer, userAddress }: SafeDeploymentParams): Promise<string> {
+  console.log("Deploying Safe...");
   try {
     // Initialize SafeFactory with the provided provider and signer
     const safeFactory = await SafeFactory.init({
       provider: provider,
       signer: signer,
+      safeVersion: "1.4.1",
     });
+    console.log("SafeFactory initialized", safeFactory);
 
     // Define SafeAccountConfig for the deployment
     const safeAccountConfig: SafeAccountConfig = {
@@ -30,8 +33,6 @@ export async function deploySafe({ provider, signer, userAddress }: SafeDeployme
 
     // Output deployment information
     console.log("Your Safe has been deployed:");
-    console.log(`Etherscan: https://sepolia.etherscan.io/address/${safeAddress}`);
-    console.log(`Safe App: https://app.safe.global/sep:${safeAddress}`);
 
     // Return the deployed Safe address or any other necessary information
     return safeAddress;
