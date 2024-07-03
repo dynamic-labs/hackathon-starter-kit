@@ -1,6 +1,15 @@
 // app/safe/index.tsx
 
+//import { useAccount } from "wagmi";
+//import { useEthersV5Provider } from "~~/hooks/scaffold-eth/use-ethers-v5-provider";
+//import { useEthersV5Signer } from "~~/hooks/scaffold-eth/use-ethers-v5-signer";
+
 const SafePage = () => {
+  // const {address, chain} = useAccount();
+
+  // const provider = useEthersV5Provider({ chainId: chain?.id });
+  // const signer = useEthersV5Signer({ chainId: chain?.id });
+
   // Logic to determine if Safe account is deployed
   const safeDeployed = true; // Replace with actual logic to check if Safe account is deployed
 
