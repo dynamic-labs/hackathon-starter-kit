@@ -1,0 +1,21 @@
+diff --git a/node_modules/@dynamic-labs/viem-utils/src/lib/createAccountWithUiConfirmation/createAccountWithUiConfirmation.js b/node_modules/@dynamic-labs/viem-utils/src/lib/createAccountWithUiConfirmation/createAccountWithUiConfirmation.js
+index 30ee355..625430b 100644
+--- a/node_modules/@dynamic-labs/viem-utils/src/lib/createAccountWithUiConfirmation/createAccountWithUiConfirmation.js
++++ b/node_modules/@dynamic-labs/viem-utils/src/lib/createAccountWithUiConfirmation/createAccountWithUiConfirmation.js
+@@ -2,6 +2,7 @@
+ import { __awaiter } from '../../../_virtual/_tslib.js';
+ import { toAccount } from 'viem/accounts';
+ import { ViemUiTransaction } from '../ViemUiTransaction/ViemUiTransaction.js';
++const bigintReplacer = (key, value) => typeof value === 'bigint' ? value.toString() : value
+ 
+ const createAccountWithUiConfirmation = ({ address, account, provider, walletConnector, walletUiUtils, }) => toAccount({
+     address,
+@@ -28,7 +29,7 @@ const createAccountWithUiConfirmation = ({ address, account, provider, walletCon
+     }),
+     signTypedData: (...args) => walletUiUtils.signMessage({
+         handler: () => __awaiter(void 0, void 0, void 0, function* () { return (yield account()).signTypedData(...args); }),
+-        message: JSON.stringify(args[0]),
++        message: JSON.stringify(args[0], bigintReplacer),
+     }),
+ });
+ 

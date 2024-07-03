@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { Chain, WalletClient, createPublicClient, encodeFunctionData, erc20Abi, http } from "viem"
+import { Chain, WalletClient, createPublicClient, encodeFunctionData, erc20Abi, http, parseEther, parseUnits } from "viem"
 import {
     ENTRYPOINT_ADDRESS_V07, 
     GetUserOperationReceiptReturnType, 
@@ -23,6 +23,7 @@ import {
 import { pimlicoBundlerActions, pimlicoPaymasterActions } from "permissionless/actions/pimlico"
 import { createPimlicoBundlerClient, createPimlicoPaymasterClient } from "permissionless/clients/pimlico"
 import { providers } from "ethers";
+import { ERC20_ABI } from "./erc20_abi"
 
 const transportUrl = (chain: Chain) =>
     `https://api.pimlico.io/v2/${chain.id}/rpc?apikey=fa9691a5-de7b-44a5-ad14-f3c7971fb9d4`;
@@ -73,8 +74,8 @@ const transportUrl = (chain: Chain) =>
       chain,
       bundlerTransport: http(transportUrl(chain)),
       middleware: {
-        gasPrice: async () =>
-          (await pimlicoBundlerClient(chain).getUserOperationGasPrice()).fast, // use pimlico bundler to get gas prices
+        //gasPrice: async () =>
+          //(await pimlicoBundlerClient(chain).getUserOperationGasPrice()).fast, // use pimlico bundler to get gas prices
         sponsorUserOperation: paymasterClient(chain).sponsorUserOperation, // optional
       },
     });
@@ -87,15 +88,22 @@ const transportUrl = (chain: Chain) =>
     chain: Chain,
     toAddress: string
   ) => {
-    console.log(amount, BigInt(1 * 10 ** 2))
-    const data = encodeFunctionData({
-      abi: erc20Abi,
+    console.log(amount, "amount")
+    /*const data = encodeFunctionData({
+      abi: ERC20_ABI,
       functionName: "transfer",
-      args: [toAddress as `0x${string}`, amount],
+      args: [toAddress as `0x${string}`, BigInt(amount)],
     });
+    console.log(data, "data")
     return await smartAccountClient.sendTransaction({
-      to: tokenAddress,
-      value: 0,
+      to: tokenAddress as `0x${string}`,
+      value: BigInt(0),
       data: data,
+    });*/
+    return await smartAccountClient.writeContract({
+      address: tokenAddress,
+      abi: ERC20_ABI,
+      functionName: "transfer",
+      args: [toAddress, "100"],
     });
  };
