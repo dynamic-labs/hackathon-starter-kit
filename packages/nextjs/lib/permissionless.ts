@@ -95,14 +95,8 @@ const transportUrl = (chain: Chain) =>
   amount: bigint,
   receiver: string
 ) => {
-  console.log("smartAccountClient", smartAccountClient)
   const destChainSelector = "3478487238524512106" //https://docs.chain.link/ccip/supported-networks/v1_2_0/testnet#base-sepolia-arbitrum-sepolia
-  console.log("destChainSelector", destChainSelector)
-  console.log("receiver", receiver)
-  console.log("tokenAddress", tokenAddress)
-  console.log("amount", amount.toString())
-  console.log("CROSSCHAIN_TRANSFER_CONTRACT_BASE_SEPOLIA", CROSSCHAIN_TRANSFER_CONTRACT_BASE_SEPOLIA)
-  console.log("ERC20_CROSSCHAIN_TRANSFER_ABI", ERC20_CROSSCHAIN_TRANSFER_ABI)
+
   return await smartAccountClient.writeContract({
     address: CROSSCHAIN_TRANSFER_CONTRACT_BASE_SEPOLIA,
     abi: ERC20_CROSSCHAIN_TRANSFER_ABI,

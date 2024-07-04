@@ -8,7 +8,7 @@ import { baseSepolia } from "viem/chains";
 import { useAccount, useBalance, useReadContract } from "wagmi";
 import { CheckBadgeIcon, ClipboardIcon } from "@heroicons/react/24/outline";
 import { ERC20_ABI } from "~~/lib/ABI";
-import { USDC_ADDRESS } from "~~/lib/constants";
+import { CROSSCHAIN_TRANSFER_CONTRACT_BASE_SEPOLIA, USDC_ADDRESS } from "~~/lib/constants";
 import {
   approveERC20,
   crossChainTransferERC20,
@@ -78,7 +78,6 @@ const SafePage = () => {
     try {
       const userAddress = address as `0x${string}`;
       if (!primaryWallet || !chain) return;
-      console.log(chain, "chain")
       const walletClient = await createWalletClientFromWallet(primaryWallet);
       const smartAccountClient = await getPimlicoSmartAccountClient(userAddress, chain, walletClient);
       const txHash = await transferERC20(
@@ -104,14 +103,13 @@ const SafePage = () => {
       if (!primaryWallet || !chain) return;
       const walletClient = await createWalletClientFromWallet(primaryWallet);
       const smartAccountClient = await getPimlicoSmartAccountClient(userAddress, chain, walletClient);
-      console.log("here");
-      const hashhh= await approveERC20(
+      const approveHash= await approveERC20(
         smartAccountClient,
         crossChainTransferTokenAddress,
         BigInt(crossChainTransferAmount * 10 ** 6),
-        crossChainRecipientAddress,
+        CROSSCHAIN_TRANSFER_CONTRACT_BASE_SEPOLIA,
       );
-      console.log("here2", hashhh);
+      console.log("approveHash", approveHash);
 
       const txHash = await crossChainTransferERC20(
         smartAccountClient,
@@ -119,7 +117,7 @@ const SafePage = () => {
         BigInt(crossChainTransferAmount * 10 ** 6),
         crossChainRecipientAddress,
       );
-      console.log("here3", txHash)
+      console.log("txHash", txHash)
       setTransactions([...transactions, txHash]);
     } catch (err) {
       setError("Failed to transfer tokens.");
