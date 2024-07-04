@@ -105,14 +105,13 @@ const SafePage = () => {
       const walletClient = await createWalletClientFromWallet(primaryWallet);
       const smartAccountClient = await getPimlicoSmartAccountClient(userAddress, chain, walletClient);
       console.log("here");
-      
-      /*const hashhh= await approveERC20(
+      const hashhh= await approveERC20(
         smartAccountClient,
         crossChainTransferTokenAddress,
         BigInt(crossChainTransferAmount * 10 ** 6),
         crossChainRecipientAddress,
       );
-      console.log("here2", hashhh);*/
+      console.log("here2", hashhh);
 
       const txHash = await crossChainTransferERC20(
         smartAccountClient,
