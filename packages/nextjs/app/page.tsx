@@ -7,26 +7,6 @@ import { useAccount } from "wagmi";
 import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Address } from "~~/components/scaffold-eth";
 
-// app/page.tsx
-
-// app/page.tsx
-
-// app/page.tsx
-
-// app/page.tsx
-
-// app/page.tsx
-
-// app/page.tsx
-
-// app/page.tsx
-
-// app/page.tsx
-
-// app/page.tsx
-
-// app/page.tsx
-
 const Home: NextPage = () => {
   const { address: connectedAddress } = useAccount();
 
@@ -82,13 +62,6 @@ const Home: NextPage = () => {
                 tab.
               </p>
             </div>
-          </div>
-          <div className="flex justify-center items-center mt-8">
-            <Link href="/safe" passHref>
-              <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                Safe Smart Wallet
-              </button>
-            </Link>
           </div>
         </div>
       </div>
