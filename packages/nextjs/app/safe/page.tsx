@@ -16,13 +16,14 @@ const SafePage = () => {
   const { primaryWallet } = useDynamicContext();
 
   const [safeDeployed, setSafeDeployed] = useState(false);
-  // const [safeAddress, setSafeAddress] = useState<string | null>("0xE65D283F5b62E0ea8e41de5480599655D26293d6");
   const [safeAddress, setSafeAddress] = useState<string | null>("");
 
   const [transactions, setTransactions] = useState<string[]>([]); // [txHash, txHash, ...
   const [loading, setLoading] = useState(false);
   const [transferAmount, setTransferAmount] = useState<number>(0);
-  // const [crossChainTransferAmount, setCrossChainTransferAmount] = useState<number>(0);
+  const [crossChainTransferAmount, setCrossChainTransferAmount] = useState<number>(0);
+  const [crossChainTransferTokenAddress] = useState<string>(USDC_ADDRESS[baseSepolia.id]);
+  const [crossChainRecipientAddress, setCrossChainRecipientAddress] = useState<string>("");
   const [transferTokenAddress, setTransferTokenAddress] = useState<string>("");
   const [recipientAddress, setRecipientAddress] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
@@ -147,10 +148,13 @@ const SafePage = () => {
             <div role="tabpanel" className="tab-content p-10 w-full">
               <div className="flex flex-col justify-center items-center gap-4">
                 <div className="flex flex-col gap-4 items-center justify-center w-full">
-                  <div className="btn btn-outline btn-xs" onClick={() => copyToClipboard(USDC_ADDRESS[chain!.id])}>
-                    <ClipboardIcon className="w-4 h-4" />
-                    USDC Address
-                  </div>
+                  {chain && (
+                    <div className="btn btn-outline btn-xs" onClick={() => copyToClipboard(USDC_ADDRESS[chain.id])}>
+                      <ClipboardIcon className="w-4 h-4" />
+                      USDC Address
+                    </div>
+                  )}
+
                   <label className="input input-bordered flex items-center gap-2 w-full">
                     <span className="font-medium">Token Address</span>
                     <input
@@ -211,7 +215,7 @@ const SafePage = () => {
                       type="text"
                       className="grow bg-transparent"
                       placeholder="0x1aB..."
-                      value={USDC_ADDRESS[baseSepolia.id]}
+                      value={crossChainTransferTokenAddress}
                       disabled={true}
                     />
                   </label>
@@ -221,8 +225,8 @@ const SafePage = () => {
                       type="number"
                       className="grow bg-transparent"
                       placeholder="0"
-                      value={transferAmount}
-                      onChange={e => setTransferAmount(Number(e.target.value))}
+                      value={crossChainTransferAmount}
+                      onChange={e => setCrossChainTransferAmount(Number(e.target.value))}
                     />
                   </label>
                   <label className="input input-bordered flex items-center gap-2 w-full">
@@ -231,8 +235,8 @@ const SafePage = () => {
                       type="text"
                       className="grow bg-transparent"
                       placeholder="0x1aB..."
-                      value={recipientAddress}
-                      onChange={e => setRecipientAddress(e.target.value)}
+                      value={crossChainRecipientAddress}
+                      onChange={e => setCrossChainRecipientAddress(e.target.value)}
                     />
                   </label>
                   <div className="flex flex-col gap-1">
