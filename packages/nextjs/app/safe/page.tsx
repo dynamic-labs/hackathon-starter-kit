@@ -7,9 +7,9 @@ import { formatUnits } from "viem";
 import { baseSepolia } from "viem/chains";
 import { useAccount, useBalance, useReadContract } from "wagmi";
 import { CheckBadgeIcon, ClipboardIcon } from "@heroicons/react/24/outline";
-import { USDC_ADDRESS } from "~~/lib/constants";
-import { ERC20_ABI } from "~~/lib/erc20_abi";
-import { getPimlicoSmartAccountClient, transferERC20 } from "~~/lib/permissionless";
+import { ERC20_ABI } from "~~/lib/ABI";
+import { CROSSCHAIN_TRANSFER_CONTRACT_BASE_SEPOLIA, USDC_ADDRESS } from "~~/lib/constants";
+import { crossChainTransferERC20, getPimlicoSmartAccountClient, transferERC20 } from "~~/lib/permissionless";
 
 const SafePage = () => {
   const { address, chain } = useAccount();
@@ -18,7 +18,7 @@ const SafePage = () => {
   const [safeDeployed, setSafeDeployed] = useState(false);
   const [safeAddress, setSafeAddress] = useState<string | null>("");
 
-  const [transactions, setTransactions] = useState<string[]>([]); // [txHash, txHash, ...
+  const [transactions, setTransactions] = useState<string[]>([]); 
   const [loading, setLoading] = useState(false);
   const [transferAmount, setTransferAmount] = useState<number>(0);
   const [crossChainTransferAmount, setCrossChainTransferAmount] = useState<number>(0);
@@ -37,6 +37,14 @@ const SafePage = () => {
     address: chain ? USDC_ADDRESS[chain?.id] : ("" as `0x${string}`),
     functionName: "balanceOf",
     args: [safeAddress],
+  });
+
+  //TODO
+  const { data: safeUSDCBalance, refetch: refetchSafeUSDCBalance } = useReadContract({
+    abi: ERC20_ABI,
+    address: chain ? USDC_ADDRESS[chain?.id] : ("" as `0x${string}`),
+    functionName: "allowance",
+    args: [safeAddress, CROSSCHAIN_TRANSFER_CONTRACT_BASE_SEPOLIA],
   });
 
   const handleDeploySafe = async () => {
@@ -59,21 +67,6 @@ const SafePage = () => {
     }
   };
 
-  /*const depositOnSafe = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      if (!primaryWallet || !chain) return;
-
-      refetchSafeBalance();
-    } catch (err) {
-      setError("Failed to deposit on Safe account.");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };*/
-
   const handleERC20Transfer = async () => {
     setLoading(true);
     setError(null);
@@ -86,7 +79,6 @@ const SafePage = () => {
         transferTokenAddress,
         smartAccountClient,
         BigInt(transferAmount * 10 ** 6),
-        chain,
         recipientAddress,
       );
       setTransactions([...transactions, txHash]);
@@ -98,7 +90,32 @@ const SafePage = () => {
     }
   };
 
+  const handleERC20CrossChainTransfer = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const userAddress = address as `0x${string}`;
+      if (!primaryWallet || !chain) return;
+      const walletClient = await createWalletClientFromWallet(primaryWallet);
+      const smartAccountClient = await getPimlicoSmartAccountClient(userAddress, chain, walletClient);
+      const txHash = await crossChainTransferERC20(
+        smartAccountClient,
+        crossChainTransferTokenAddress,
+        BigInt(crossChainTransferAmount * 10 ** 6),
+        crossChainRecipientAddress,
+      );
+      setTransactions([...transactions, txHash]);
+    } catch (err) {
+      setError("Failed to transfer tokens.");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const canTransfer = transferAmount > 0 && transferTokenAddress && recipientAddress;
+  const canCrossChainTransfer =
+    crossChainTransferAmount > 0 && crossChainRecipientAddress && crossChainTransferTokenAddress;
 
   const copyToClipboard = (s: string) => {
     navigator.clipboard.writeText(s);
@@ -240,7 +257,7 @@ const SafePage = () => {
                     />
                   </label>
                   <div className="flex flex-col gap-1">
-                    <button className="btn btn-success" onClick={handleERC20Transfer} disabled={!canTransfer}>
+                    <button className="btn btn-success" onClick={handleERC20CrossChainTransfer} disabled={!canCrossChainTransfer}>
                       Send Crosschain Transaction
                     </button>
                     <p className="text-warning text-xs">
