@@ -12,6 +12,7 @@ import {
 } from "permissionless/accounts"
 import { createPimlicoBundlerClient, createPimlicoPaymasterClient } from "permissionless/clients/pimlico"
 import { ERC20_ABI, ERC20_CROSSCHAIN_TRANSFER_ABI } from "./ABI"
+import { CROSSCHAIN_TRANSFER_CONTRACT_BASE_SEPOLIA } from "./constants"
 
 const transportUrl = (chain: Chain) =>
     `https://api.pimlico.io/v2/${chain.id}/rpc?apikey=${process.env.NEXT_PUBLIC_PIMLICO_API_KEY}`;
@@ -61,8 +62,8 @@ const transportUrl = (chain: Chain) =>
     });
   };
   export const approveERC20 = async (
-    tokenAddress: string,
     smartAccountClient: any,
+    tokenAddress: string,
     amount: bigint,
     spender: string
   ) => {
@@ -75,8 +76,8 @@ const transportUrl = (chain: Chain) =>
  };
 
   export const transferERC20 = async (
-    tokenAddress: string,
     smartAccountClient: any,
+    tokenAddress: string,
     amount: bigint,
     toAddress: string
   ) => {
@@ -94,10 +95,15 @@ const transportUrl = (chain: Chain) =>
   amount: bigint,
   receiver: string
 ) => {
+  console.log("smartAccountClient", smartAccountClient)
   const destChainSelector = "3478487238524512106" //https://docs.chain.link/ccip/supported-networks/v1_2_0/testnet#base-sepolia-arbitrum-sepolia
-  
+  console.log("destChainSelector", destChainSelector)
+  console.log("receiver", receiver)
+  console.log("tokenAddress", tokenAddress)
+  console.log("amount", amount.toString())
+  console.log("CROSSCHAIN_TRANSFER_CONTRACT_BASE_SEPOLIA", CROSSCHAIN_TRANSFER_CONTRACT_BASE_SEPOLIA)
   return await smartAccountClient.writeContract({
-    address: tokenAddress,
+    address: CROSSCHAIN_TRANSFER_CONTRACT_BASE_SEPOLIA,
     abi: ERC20_CROSSCHAIN_TRANSFER_ABI,
     functionName: "transferTokensPayNative",
     args: [destChainSelector, receiver, tokenAddress, amount.toString()],

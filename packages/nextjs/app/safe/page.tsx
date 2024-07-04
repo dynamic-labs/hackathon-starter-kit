@@ -81,8 +81,8 @@ const SafePage = () => {
       const walletClient = await createWalletClientFromWallet(primaryWallet);
       const smartAccountClient = await getPimlicoSmartAccountClient(userAddress, chain, walletClient);
       const txHash = await transferERC20(
-        transferTokenAddress,
         smartAccountClient,
+        transferTokenAddress,
         BigInt(transferAmount * 10 ** 6),
         recipientAddress,
       );
@@ -103,18 +103,23 @@ const SafePage = () => {
       if (!primaryWallet || !chain) return;
       const walletClient = await createWalletClientFromWallet(primaryWallet);
       const smartAccountClient = await getPimlicoSmartAccountClient(userAddress, chain, walletClient);
-      await approveERC20(
-        crossChainTransferTokenAddress,
+      console.log("here");
+      /*
+      const hashhh= await approveERC20(
         smartAccountClient,
+        crossChainTransferTokenAddress,
         BigInt(crossChainTransferAmount * 10 ** 6),
         crossChainRecipientAddress,
       );
+      console.log("here2", hashhh);*/
+
       const txHash = await crossChainTransferERC20(
         smartAccountClient,
         crossChainTransferTokenAddress,
         BigInt(crossChainTransferAmount * 10 ** 6),
         crossChainRecipientAddress,
       );
+      console.log("here3", txHash)
       setTransactions([...transactions, txHash]);
     } catch (err) {
       setError("Failed to transfer tokens.");
