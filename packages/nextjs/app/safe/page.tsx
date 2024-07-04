@@ -8,17 +8,22 @@ import { baseSepolia } from "viem/chains";
 import { useAccount, useBalance, useReadContract } from "wagmi";
 import { CheckBadgeIcon, ClipboardIcon } from "@heroicons/react/24/outline";
 import { ERC20_ABI } from "~~/lib/ABI";
-import { CROSSCHAIN_TRANSFER_CONTRACT_BASE_SEPOLIA, USDC_ADDRESS } from "~~/lib/constants";
-import { crossChainTransferERC20, getPimlicoSmartAccountClient, transferERC20 } from "~~/lib/permissionless";
+import { USDC_ADDRESS } from "~~/lib/constants";
+import {
+  approveERC20,
+  crossChainTransferERC20,
+  getPimlicoSmartAccountClient,
+  transferERC20,
+} from "~~/lib/permissionless";
 
 const SafePage = () => {
-  const { address, chain } = useAccount();
-  const { primaryWallet } = useDynamicContext();
+  const { address, chain, isConnected } = useAccount();
+  const { primaryWallet, isAuthenticated } = useDynamicContext();
 
   const [safeDeployed, setSafeDeployed] = useState(false);
   const [safeAddress, setSafeAddress] = useState<string | null>("");
 
-  const [transactions, setTransactions] = useState<string[]>([]); 
+  const [transactions, setTransactions] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [transferAmount, setTransferAmount] = useState<number>(0);
   const [crossChainTransferAmount, setCrossChainTransferAmount] = useState<number>(0);
@@ -40,12 +45,12 @@ const SafePage = () => {
   });
 
   //TODO
-  const { data: safeUSDCBalance, refetch: refetchSafeUSDCBalance } = useReadContract({
+  /*const { data: safeUSDCAllowance, refetch: refetchSafeUSDCAllowance } = useReadContract({
     abi: ERC20_ABI,
     address: chain ? USDC_ADDRESS[chain?.id] : ("" as `0x${string}`),
     functionName: "allowance",
     args: [safeAddress, CROSSCHAIN_TRANSFER_CONTRACT_BASE_SEPOLIA],
-  });
+  });*/
 
   const handleDeploySafe = async () => {
     setLoading(true);
@@ -98,6 +103,12 @@ const SafePage = () => {
       if (!primaryWallet || !chain) return;
       const walletClient = await createWalletClientFromWallet(primaryWallet);
       const smartAccountClient = await getPimlicoSmartAccountClient(userAddress, chain, walletClient);
+      await approveERC20(
+        crossChainTransferTokenAddress,
+        smartAccountClient,
+        BigInt(crossChainTransferAmount * 10 ** 6),
+        crossChainRecipientAddress,
+      );
       const txHash = await crossChainTransferERC20(
         smartAccountClient,
         crossChainTransferTokenAddress,
@@ -257,7 +268,11 @@ const SafePage = () => {
                     />
                   </label>
                   <div className="flex flex-col gap-1">
-                    <button className="btn btn-success" onClick={handleERC20CrossChainTransfer} disabled={!canCrossChainTransfer}>
+                    <button
+                      className="btn btn-success"
+                      onClick={handleERC20CrossChainTransfer}
+                      disabled={!canCrossChainTransfer}
+                    >
                       Send Crosschain Transaction
                     </button>
                     <p className="text-warning text-xs">
@@ -271,13 +286,19 @@ const SafePage = () => {
         </div>
       ) : (
         <>
-          <button className="btn btn-success" onClick={handleDeploySafe} disabled={loading}>
+          <button
+            className="btn btn-success"
+            onClick={handleDeploySafe}
+            disabled={loading || !isConnected || !isAuthenticated}
+          >
             {loading ? (
               <>
                 <span className="loading loading-spinner"></span>Deploying...
               </>
-            ) : (
+            ) : isConnected && isAuthenticated ? (
               "Deploy Safe Account"
+            ) : (
+              "Connect Wallet first"
             )}
           </button>
           {error && <p className="text-red-500 mt-4">{error}</p>}
