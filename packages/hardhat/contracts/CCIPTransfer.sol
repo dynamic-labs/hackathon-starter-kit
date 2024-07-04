@@ -1,3 +1,5 @@
+/*
+
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
@@ -11,7 +13,7 @@ import {SafeERC20} from "@chainlink/contracts-ccip/src/v0.8/vendor/openzeppelin-
  * THIS IS AN EXAMPLE CONTRACT THAT USES HARDCODED VALUES FOR CLARITY.
  * THIS IS AN EXAMPLE CONTRACT THAT USES UN-AUDITED CODE.
  * DO NOT USE THIS CODE IN PRODUCTION.
- */
+ 
 
 /// @title - A simple contract for transferring tokens across chains.
 contract TokenTransferor is OwnerIsCreator {
@@ -282,3 +284,4 @@ contract TokenTransferor is OwnerIsCreator {
         IERC20(_token).safeTransfer(_beneficiary, amount);
     }
 }
+*/

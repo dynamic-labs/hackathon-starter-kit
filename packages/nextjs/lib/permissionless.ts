@@ -102,6 +102,7 @@ const transportUrl = (chain: Chain) =>
   console.log("tokenAddress", tokenAddress)
   console.log("amount", amount.toString())
   console.log("CROSSCHAIN_TRANSFER_CONTRACT_BASE_SEPOLIA", CROSSCHAIN_TRANSFER_CONTRACT_BASE_SEPOLIA)
+  console.log("ERC20_CROSSCHAIN_TRANSFER_ABI", ERC20_CROSSCHAIN_TRANSFER_ABI)
   return await smartAccountClient.writeContract({
     address: CROSSCHAIN_TRANSFER_CONTRACT_BASE_SEPOLIA,
     abi: ERC20_CROSSCHAIN_TRANSFER_ABI,

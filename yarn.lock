@@ -3020,7 +3020,7 @@ __metadata:
     next-themes: ^0.2.1
     nprogress: ^0.2.0
     patch-package: ^8.0.0
-    permissionless: 0.1.35
+    permissionless: 0.1.22
     postcss: ^8.4.16
     postinstall-postinstall: ^2.1.0
     prettier: ^2.8.4
@@ -12642,12 +12642,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"permissionless@npm:0.1.35":
-  version: 0.1.35
-  resolution: "permissionless@npm:0.1.35"
+"permissionless@npm:0.1.22":
+  version: 0.1.22
+  resolution: "permissionless@npm:0.1.22"
   peerDependencies:
-    viem: ^2.14.1
-  checksum: 25d827807997d3ba2dd4ab4a404a049c30f359c9a32fa4827b5c23adb47f0cc7d6cd306660ee8d806f52fe66a080692b5531f974392eda34725a34c82d8c8885
+    viem: ^2.9.17
+  checksum: 1804559de53cc8aa02e9ef0e2d546a55f2e9be62ac0ef701ce5851d15c40447cf929cbadc43b274f167a48b499c74bc534c857990b3501e5c25bfb38196cefc9
   languageName: node
   linkType: hard
 

@@ -78,6 +78,7 @@ const SafePage = () => {
     try {
       const userAddress = address as `0x${string}`;
       if (!primaryWallet || !chain) return;
+      console.log(chain, "chain")
       const walletClient = await createWalletClientFromWallet(primaryWallet);
       const smartAccountClient = await getPimlicoSmartAccountClient(userAddress, chain, walletClient);
       const txHash = await transferERC20(
@@ -104,8 +105,8 @@ const SafePage = () => {
       const walletClient = await createWalletClientFromWallet(primaryWallet);
       const smartAccountClient = await getPimlicoSmartAccountClient(userAddress, chain, walletClient);
       console.log("here");
-      /*
-      const hashhh= await approveERC20(
+      
+      /*const hashhh= await approveERC20(
         smartAccountClient,
         crossChainTransferTokenAddress,
         BigInt(crossChainTransferAmount * 10 ** 6),
