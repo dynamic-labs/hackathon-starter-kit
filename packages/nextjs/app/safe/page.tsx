@@ -31,6 +31,7 @@ const SafePage = () => {
 
   const [transactions, setTransactions] = useState<string[]>([]);
   const [transactionDetails, setTransactionDetails] = useState<TransactionDetails[]>([]); // TransactionDetails[
+  const [refreshingTransactions, setRefreshingTransactions] = useState(false);
   const [loading, setLoading] = useState(false);
   const [transferAmount, setTransferAmount] = useState<number>(0);
   const [crossChainTransferAmount, setCrossChainTransferAmount] = useState<number>(0);
@@ -94,6 +95,18 @@ const SafePage = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const refreshTransactions = async () => {
+    setRefreshingTransactions(true);
+    setTransactionDetails([]);
+    const txDetails = [];
+    for (const txHash of transactions) {
+      const transactionDetail = await getTransactionOnBaseSepoliaByHash(txHash);
+      txDetails.push(transactionDetail);
+      setTransactionDetails(txDetails);
+    }
+    setRefreshingTransactions(false);
   };
 
   const handleERC20CrossChainTransfer = async () => {
@@ -221,7 +234,13 @@ const SafePage = () => {
                   </label>
                   <div className="flex flex-col gap-1">
                     <button className="btn btn-success" onClick={handleERC20Transfer} disabled={!canTransfer}>
-                      Send Transaction
+                      {loading ? (
+                        <>
+                          <span className="loading loading-spinner"></span>Sending...
+                        </>
+                      ) : (
+                        "Send transaction"
+                      )}
                     </button>
                     <p className="text-warning text-xs">
                       Make sure to have enough balance in the Safe account and the recipient address is valid.
@@ -290,20 +309,33 @@ const SafePage = () => {
             </div>
             <input type="radio" name="my_tabs_1" role="tab" className="tab  w-full" aria-label="Transactions" />
             <div role="tabpanel" className="tab-content p-10  w-full">
-              <div className="flex flex-col gap-2">
-                {transactionDetails.map(tx => (
-                  <div className="flex flex-col gap-1" key={tx.hash}>
-                    <div className="flex flex-row gap-2">
-                      <a target="_blank" href={`${BASE_SEPOLIA_BLOCKSCOUT_TX_BASE_URL}/${tx.hash}`}>
-                        <div className="flex flex-row gap-2 items-center">
-                          {`${tx.hash.substring(0, 8)}...${tx.hash.substring(tx.hash.length - 8)}`}
-                          <ExternalLinkIcon />
+              <div className="flex flex-col gap-4">
+                <button className="btn btn-outline btn-sm w-fit" onClick={refreshTransactions}>
+                  {refreshingTransactions ? (
+                    <>
+                      <span className="loading loading-spinner"></span>Refreshing...
+                    </>
+                  ) : (
+                    "Refresh Transactions"
+                  )}
+                </button>
+                {!refreshingTransactions && (
+                  <div className="flex flex-col gap-1">
+                    {transactionDetails.map(tx => (
+                      <div className="flex flex-col gap-1" key={tx.hash}>
+                        <div className="flex flex-row gap-8">
+                          <a target="_blank" href={`${BASE_SEPOLIA_BLOCKSCOUT_TX_BASE_URL}/${tx.hash}`}>
+                            <div className="flex flex-row gap-2 items-center">
+                              {`${tx.hash.substring(0, 8)}...${tx.hash.substring(tx.hash.length - 8)}`}
+                              <ExternalLinkIcon />
+                            </div>
+                          </a>
+                          <div>{toMinsAgo(tx.timestamp)}</div>
                         </div>
-                      </a>
-                      <div>{toMinsAgo(tx.timestamp)}</div>
-                    </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                )}
               </div>
             </div>
           </div>
