@@ -77,6 +77,51 @@ Visit our [docs](https://docs.scaffoldeth.io) to learn how to start building wit
 
 To know more about its features, check out our [website](https://scaffoldeth.io).
 
+# Dynamic Implementation for ETHGlobal Brussels 2024
+
+## Overview
+
+- ✅ **Dynamic widget**: Provides an interactive and responsive widget for interacting with your embedded wallet. You can create your embedded wallet using social logins or connecting an existing wallet.
+- 🔥 **Safe Smart Wallet**: Provides the most battle-tested ERC-4337 compatible smart wallet, improving users' UX.
+- 📱 **Permissionless.js (Pimlico) for gasless transactions**: Facilitates transactions without requiring users to pay gas fees. Pimlico is the world's most popular ERC-4337 account abstraction infrastructure platform.
+- ⛓ **Chainlink CCIP for cross-chain transactions**: Enables seamless transfers across different blockchain networks.
+- 🔗 **Blockscout for checking transactions**: Allows users to track and verify their transactions.
+
+## Requirements
+
+- You have to get a [Pimlico API key](https://dashboard.pimlico.io/sign-in) and put it in your env file (`NEXT_PUBLIC_PIMLICO_API_KEY`).
+- Run `yarn chain` on a chain different from "local" to leverage the Smart wallet features. `yarn chain` runs on base-sepolia by default in this repo. You can easily change it in `/nextjs/scaffold.config.ts`.
+- You should send some ERC20 (USDC is better) to your Safe smart wallet in order to use the transfer and cross-chain transfer capabilities.
+
+## Dynamic implementation for ETHGlobal Brussels 2024 - Safe Smart Wallet and Permissionless.js (Pimlico)
+
+Navigate to the "Smart Wallet" section and click on "Deploy Safe Account".
+This action calls the `createSmartAccountClient` function from Permissionless.js. More details can be found [here](https://docs.pimlico.io/permissionless/how-to/signers/privy#create-the-smartaccountclient).
+The Safe address is calculated deterministically based on your Dynamic embedded wallet address.
+The actual deployment of the Safe wallet occurs when you initiate your first transaction, such as a transfer.
+
+### Executing a Transfer:
+You can perform a transfer of ERC-20 tokens in a gasless way. The app uses `smartAccountClient.writeContract` from Permissionless.js ([source](https://docs.pimlico.io/permissionless/reference/smart-account-actions/writeContract)). This allows for gasless transfers, sponsored by the Pimlico Paymaster on testnets.
+ERC-20 transfers are supported on any chain supported by Pimlico. Refer to the supported chains documentation [here](https://docs.pimlico.io/infra/bundler/bundler-errors/chain-not-supported#adding-new-chains).
+
+## Dynamic implementation for ETHGlobal Brussels 2024 - Chainlink CCIP for Cross-Chain Transactions
+
+A custom Chainlink CCIP cross-chain transfer smart contract has been deployed, allowing for USDC (only!) transfers.
+The contract has ETH on Base Sepolia to cover CCIP fees.
+Contract address: `0x480A24B3F71f8704066211e61CF6CCE430B8a5c7`. You can find it in the `constants.ts` file of the project.
+Check the contract code: you can find the code in `/hardhat/contracts/CCIPTransfer.sol`.
+Check the contract ABI: you can find the contract ABI in `/nextjs/lib/ABI`.
+The reference of the contract is this Chainlink CCIP contract example ([source](https://docs.chain.link/ccip/tutorials/cross-chain-tokens)).
+
+The app uses `smartAccountClient.writeContract` ([source](https://docs.pimlico.io/permissionless/reference/smart-account-actions/writeContract)) of Permissionless.js to ensure gasless cross-chain transactions.
+The implementation is flexible, allowing for easy extension to support additional chains or rewriting the contract.
+If your allowance is lower than the amount to transfer, you are asked to execute an approve too.
+
+## Dynamic implementation for ETHGlobal Brussels 2024 - Blockscout for Checking Transactions
+
+In the "Transactions" section, users can view all transactions executed by the Safe smart wallet within the session. The app integrates the [Blockscout API](https://docs.blockscout.com/for-users/api) to fetch and display transaction details, providing a transparent and user-friendly way to track activities.
+
+
 ## Contributing to Scaffold-ETH 2
 
 We welcome contributions to Scaffold-ETH 2!
