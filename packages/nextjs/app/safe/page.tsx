@@ -6,6 +6,7 @@ import { createWalletClientFromWallet } from "@dynamic-labs/viem-utils";
 import { formatUnits } from "viem";
 import { baseSepolia } from "viem/chains";
 import { useAccount, useBalance, useReadContract } from "wagmi";
+import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import { CheckBadgeIcon, ClipboardIcon } from "@heroicons/react/24/outline";
 import { ERC20_ABI } from "~~/lib/ABI";
 import { TransactionDetails, getTransactionOnBaseSepoliaByHash } from "~~/lib/blockscout";
@@ -179,10 +180,23 @@ const SafePage = () => {
         <div className="flex flex-col justify-center items-center gap-4">
           <div role="alert" className="alert w-fit border border-white">
             <div className="flex flex-row items-center gap-2">
-              <CheckBadgeIcon className="w-12 h-12" />
               <div>
-                <h3 className="font-bold">Safe Smart Wallet deployed!</h3>
-                <div>Address: {safeAddress}</div>
+                <div className="flex flex-row items-center gap-2">
+                  <CheckCircleIcon className="w-6 h-6" />
+                  <div className="font-bold text-lg">Safe Smart Wallet deployed!</div>
+                </div>
+                <div className="flex flex-row items-center gap-4">
+                  <p>Address: {safeAddress}</p>
+                  {safeAddress && (
+                    <div
+                      className="flex flex-row items-center gap-1  cursor-pointer hover:text-warning"
+                      onClick={() => copyToClipboard(safeAddress)}
+                    >
+                      <ClipboardIcon className="w-4 h-4" />
+                      <p className="text-xs">Copy</p>
+                    </div>
+                  )}
+                </div>
                 {safeBalance && <div>Balance ETH: {formatUnits(safeBalance.value, safeBalance.decimals)} $ETH</div>}
                 {(safeUSDCBalance as bigint) >= 0n && (
                   <div>Balance USDC: {formatUnits(safeUSDCBalance as bigint, 6)} $USDC</div>
@@ -298,7 +312,13 @@ const SafePage = () => {
                       onClick={handleERC20CrossChainTransfer}
                       disabled={!canCrossChainTransfer}
                     >
-                      Send Crosschain Transaction
+                      {loading ? (
+                        <>
+                          <span className="loading loading-spinner"></span>Sending...
+                        </>
+                      ) : (
+                        "Send Crosschain transaction"
+                      )}
                     </button>
                     <p className="text-warning text-xs">
                       Make sure to have enough balance in the Safe account and the recipient address is valid.
