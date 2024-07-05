@@ -8,7 +8,13 @@ import { baseSepolia } from "viem/chains";
 import { useAccount, useBalance, useReadContract } from "wagmi";
 import { CheckBadgeIcon, ClipboardIcon } from "@heroicons/react/24/outline";
 import { ERC20_ABI } from "~~/lib/ABI";
-import { CROSSCHAIN_TRANSFER_CONTRACT_BASE_SEPOLIA, USDC_ADDRESS } from "~~/lib/constants";
+import { TransactionDetails, getTransactionOnBaseSepoliaByHash } from "~~/lib/blockscout";
+import {
+  BASE_SEPOLIA_BLOCKSCOUT_TX_BASE_URL,
+  CROSSCHAIN_TRANSFER_CONTRACT_BASE_SEPOLIA,
+  USDC_ADDRESS,
+} from "~~/lib/constants";
+import { toMinsAgo } from "~~/lib/date-utils";
 import {
   approveERC20,
   crossChainTransferERC20,
@@ -24,6 +30,7 @@ const SafePage = () => {
   const [safeAddress, setSafeAddress] = useState<string | null>("");
 
   const [transactions, setTransactions] = useState<string[]>([]);
+  const [transactionDetails, setTransactionDetails] = useState<TransactionDetails[]>([]); // TransactionDetails[
   const [loading, setLoading] = useState(false);
   const [transferAmount, setTransferAmount] = useState<number>(0);
   const [crossChainTransferAmount, setCrossChainTransferAmount] = useState<number>(0);
@@ -43,14 +50,6 @@ const SafePage = () => {
     functionName: "balanceOf",
     args: [safeAddress],
   });
-
-  //TODO
-  /*const { data: safeUSDCAllowance, refetch: refetchSafeUSDCAllowance } = useReadContract({
-    abi: ERC20_ABI,
-    address: chain ? USDC_ADDRESS[chain?.id] : ("" as `0x${string}`),
-    functionName: "allowance",
-    args: [safeAddress, CROSSCHAIN_TRANSFER_CONTRACT_BASE_SEPOLIA],
-  });*/
 
   const handleDeploySafe = async () => {
     setLoading(true);
@@ -87,6 +86,8 @@ const SafePage = () => {
         recipientAddress,
       );
       setTransactions([...transactions, txHash]);
+      const transactionDetail = await getTransactionOnBaseSepoliaByHash(txHash);
+      setTransactionDetails([...transactionDetails, transactionDetail]);
     } catch (err) {
       setError("Failed to transfer tokens.");
       console.error(err);
@@ -103,7 +104,7 @@ const SafePage = () => {
       if (!primaryWallet || !chain) return;
       const walletClient = await createWalletClientFromWallet(primaryWallet);
       const smartAccountClient = await getPimlicoSmartAccountClient(userAddress, chain, walletClient);
-      const approveHash= await approveERC20(
+      const approveHash = await approveERC20(
         smartAccountClient,
         crossChainTransferTokenAddress,
         BigInt(crossChainTransferAmount * 10 ** 6),
@@ -117,8 +118,10 @@ const SafePage = () => {
         BigInt(crossChainTransferAmount * 10 ** 6),
         crossChainRecipientAddress,
       );
-      console.log("txHash", txHash)
+      console.log("txHash", txHash);
       setTransactions([...transactions, txHash]);
+      const transactionDetail = await getTransactionOnBaseSepoliaByHash(txHash);
+      setTransactionDetails([...transactionDetails, transactionDetail]);
     } catch (err) {
       setError("Failed to transfer tokens.");
       console.error(err);
@@ -136,7 +139,7 @@ const SafePage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center h-screen gap-8 p-12">
+    <div className="flex flex-col items-center h-screen gap-4 p-12">
       <div className="flex flex-col items-center justify-center">
         <h1 className="text-4xl font-bold">Safe Smart Wallet</h1>
         <p className="text-lg">
@@ -283,6 +286,24 @@ const SafePage = () => {
                     </p>
                   </div>
                 </div>
+              </div>
+            </div>
+            <input type="radio" name="my_tabs_1" role="tab" className="tab  w-full" aria-label="Transactions" />
+            <div role="tabpanel" className="tab-content p-10  w-full">
+              <div className="flex flex-col gap-2">
+                {transactionDetails.map(tx => (
+                  <div className="flex flex-col gap-1" key={tx.hash}>
+                    <div className="flex flex-row gap-2">
+                      <a target="_blank" href={`${BASE_SEPOLIA_BLOCKSCOUT_TX_BASE_URL}/${tx.hash}`}>
+                        <div className="flex flex-row gap-2 items-center">
+                          {`${tx.hash.substring(0, 8)}...${tx.hash.substring(tx.hash.length - 8)}`}
+                          <ExternalLinkIcon />
+                        </div>
+                      </a>
+                      <div>{toMinsAgo(tx.timestamp)}</div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
