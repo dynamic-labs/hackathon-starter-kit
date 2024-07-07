@@ -60,6 +60,19 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
       networkId: 2810,
     },
     {
+      blockExplorerUrls: ["https://sepolia.basescan.org/"],
+      chainId: 84532,
+      name: "Base Sepolia",
+      rpcUrls: ["https://base-sepolia-rpc.publicnode.com"],
+      iconUrls: ["https://avatars.githubusercontent.com/u/108554348?v=4"],
+      nativeCurrency: {
+        name: "Ethereum",
+        symbol: "ETH",
+        decimals: 18,
+      },
+      networkId: 84532,
+    },
+    {
       blockExplorerUrls: ["https://explorer.zircuit.com"],
       chainId: 48899,
       name: "Zircuit Testnet",
