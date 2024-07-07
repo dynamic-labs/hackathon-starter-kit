@@ -79,6 +79,8 @@ To know more about its features, check out our [website](https://scaffoldeth.io)
 
 # Hacker Kit Implementation
 
+![](./banner.png)
+
 ## Overview
 
 - ✅ **Dynamic widget**: Provides an interactive and responsive widget for interacting with your embedded wallet. You can create your embedded wallet using social logins or connecting an existing wallet.
@@ -87,11 +89,26 @@ To know more about its features, check out our [website](https://scaffoldeth.io)
 - ⛓ **Chainlink CCIP for cross-chain transactions**: Enables seamless transfers across different blockchain networks.
 - 🔗 **Blockscout for checking transactions**: Allows users to track and verify their transactions.
 
+### Chains & Networks
+Out of the box with the Dynamic implementation you get:
+
+- Base
+- Arbitrum
+- Polygon
+- Scroll
+- Zircuit
+- Rootstock
+- ZERϴ
+- Morph
+
+You can add many more via [the dashboard](https://app.dynamic.xyz/dashboard/chains-and-networks), or using [custom EVM Networks](https://docs.dynamic.xyz/chains/evmNetwork)!
+
 ## Requirements
 
 - You have to get a [Pimlico API key](https://dashboard.pimlico.io/sign-in) and put it in your env file (`NEXT_PUBLIC_PIMLICO_API_KEY`).
 - Run `yarn chain` on a chain different from "local" to leverage the Smart wallet features. `yarn chain` runs on base-sepolia by default in this repo. You can easily change it in `/nextjs/scaffold.config.ts`.
 - You should send some ERC20 (USDC is better) to your Safe smart wallet in order to use the transfer and cross-chain transfer capabilities.
+- You can use the default Dynamic environment ID to test, but we recommend you add your own as soon as possible in the env file (NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID)
 
 ## Safe Smart Wallet and Permissionless.js (Pimlico)
 
