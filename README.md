@@ -77,7 +77,7 @@ Visit our [docs](https://docs.scaffoldeth.io) to learn how to start building wit
 
 To know more about its features, check out our [website](https://scaffoldeth.io).
 
-# Dynamic Implementation for ETHGlobal Brussels 2024
+# Hacker Kit Implementation
 
 ## Overview
 
@@ -93,7 +93,7 @@ To know more about its features, check out our [website](https://scaffoldeth.io)
 - Run `yarn chain` on a chain different from "local" to leverage the Smart wallet features. `yarn chain` runs on base-sepolia by default in this repo. You can easily change it in `/nextjs/scaffold.config.ts`.
 - You should send some ERC20 (USDC is better) to your Safe smart wallet in order to use the transfer and cross-chain transfer capabilities.
 
-## Dynamic implementation for ETHGlobal Brussels 2024 - Safe Smart Wallet and Permissionless.js (Pimlico)
+## Safe Smart Wallet and Permissionless.js (Pimlico)
 
 Navigate to the "Smart Wallet" section and click on "Deploy Safe Account".
 This action calls the `createSmartAccountClient` function from Permissionless.js. More details can be found [here](https://docs.pimlico.io/permissionless/how-to/signers/privy#create-the-smartaccountclient).
@@ -104,7 +104,7 @@ The actual deployment of the Safe wallet occurs when you initiate your first tra
 You can perform a transfer of ERC-20 tokens in a gasless way. The app uses `smartAccountClient.writeContract` from Permissionless.js ([source](https://docs.pimlico.io/permissionless/reference/smart-account-actions/writeContract)). This allows for gasless transfers, sponsored by the Pimlico Paymaster on testnets.
 ERC-20 transfers are supported on any chain supported by Pimlico. Refer to the supported chains documentation [here](https://docs.pimlico.io/infra/bundler/bundler-errors/chain-not-supported#adding-new-chains).
 
-## Dynamic implementation for ETHGlobal Brussels 2024 - Chainlink CCIP for Cross-Chain Transactions
+## Chainlink CCIP for Cross-Chain Transactions
 
 A custom Chainlink CCIP cross-chain transfer smart contract has been deployed, allowing for USDC (only!) transfers.
 The contract has ETH on Base Sepolia to cover CCIP fees.
@@ -117,7 +117,7 @@ The app uses `smartAccountClient.writeContract` ([source](https://docs.pimlico.i
 The implementation is flexible, allowing for easy extension to support additional chains or rewriting the contract.
 If your allowance is lower than the amount to transfer, you are asked to execute an approve too.
 
-## Dynamic implementation for ETHGlobal Brussels 2024 - Blockscout for Checking Transactions
+## Blockscout for Checking Transactions
 
 In the "Transactions" section, users can view all transactions executed by the Safe smart wallet within the session. The app integrates the [Blockscout API](https://docs.blockscout.com/for-users/api) to fetch and display transaction details, providing a transparent and user-friendly way to track activities.
 
