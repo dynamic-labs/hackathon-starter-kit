@@ -7,7 +7,7 @@ import { formatUnits } from "viem";
 import { baseSepolia } from "viem/chains";
 import { useAccount, useBalance, useReadContract } from "wagmi";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
-import { ClipboardIcon } from "@heroicons/react/24/outline";
+import { CheckBadgeIcon, ClipboardIcon } from "@heroicons/react/24/outline";
 import { ERC20_ABI } from "~~/lib/ABI";
 import { TransactionDetails, getTransactionOnBaseSepoliaByHash } from "~~/lib/blockscout";
 import {
