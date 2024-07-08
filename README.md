@@ -1,4 +1,4 @@
-#  🏗 Scaffold-ETH 2 (Hackathon Starter Kit Version)
+# 🏗 Scaffold-ETH 2 (Hackathon Starter Kit Version)
 
 ![](./banner.png)
 
@@ -19,6 +19,7 @@
 ![Debug Contracts tab](https://github.com/scaffold-eth/scaffold-eth-2/assets/55535804/b237af0c-5027-4849-a5c1-2e31495cccb1)
 
 🔐 Authentication & User Management with [Dynamic](https://dynamic.xyz/)
+
 - Ethereum, Base, Polygon, Arbitrum, Scroll, Zircuit, ZERϴ, Morph & Rootstock enabled by default
 
 ## Requirements
@@ -89,6 +90,7 @@ To know more about its features, check out our [website](https://scaffoldeth.io)
 - 🔗 **Blockscout for checking transactions**: Allows users to track and verify their transactions.
 
 ### Chains & Networks
+
 Out of the box with the Dynamic implementation you get:
 
 - Base
@@ -117,6 +119,7 @@ The Safe address is calculated deterministically based on your Dynamic embedded 
 The actual deployment of the Safe wallet occurs when you initiate your first transaction, such as a transfer.
 
 ### Executing a Transfer:
+
 You can perform a transfer of ERC-20 tokens in a gasless way. The app uses `smartAccountClient.writeContract` from Permissionless.js ([source](https://docs.pimlico.io/permissionless/reference/smart-account-actions/writeContract)). This allows for gasless transfers, sponsored by the Pimlico Paymaster on testnets.
 ERC-20 transfers are supported on any chain supported by Pimlico. Refer to the supported chains documentation [here](https://docs.pimlico.io/infra/bundler/bundler-errors/chain-not-supported#adding-new-chains).
 
@@ -136,7 +139,6 @@ If your allowance is lower than the amount to transfer, you are asked to execute
 ## Blockscout for Checking Transactions
 
 In the "Transactions" section, users can view all transactions executed by the Safe smart wallet within the session. The app integrates the [Blockscout API](https://docs.blockscout.com/for-users/api) to fetch and display transaction details, providing a transparent and user-friendly way to track activities.
-
 
 ## Contributing to Scaffold-ETH 2
 
