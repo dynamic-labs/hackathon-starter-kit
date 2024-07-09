@@ -1,21 +1,5 @@
 export const customEvmNetworks = [
   {
-    blockExplorerUrls: ["http://localhost"],
-    chainId: 43490458484,
-    chainName: "My Arbitrum L3 Chain",
-    iconUrls: ["https://www.shutterstock.com/image-vector/moon-icon-vector-star-logo-600nw-1403123270.jpg"],
-    name: "My Arbitrum L3 Chain",
-    nativeCurrency: {
-      decimals: 18,
-      name: "Ether",
-      symbol: "ETH",
-    },
-    networkId: 43490458484,
-
-    rpcUrls: ["http://127.0.0.1:8449"],
-    vanityName: "Into Orbit",
-  },
-  {
     blockExplorerUrls: ["https://explorer-holesky.morphl2.io/"],
     chainId: 2810,
     name: "Morph",
