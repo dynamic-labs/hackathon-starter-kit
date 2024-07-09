@@ -628,15 +628,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@dynamic-labs/logger@npm:2.2.10":
-  version: 2.2.10
-  resolution: "@dynamic-labs/logger@npm:2.2.10"
-  peerDependencies:
-    eventemitter3: 5.0.1
-  checksum: 9aa5d47572a4421169e3a2944194075daaa47808e9a37154e41ad736007769785bdda55bdd56bdbe3650a2ac7d01d8cf92740fe989feb8a8e91e77728f174375
-  languageName: node
-  linkType: hard
-
 "@dynamic-labs/logger@npm:3.0.0-alpha.13":
   version: 3.0.0-alpha.13
   resolution: "@dynamic-labs/logger@npm:3.0.0-alpha.13"
@@ -682,13 +673,6 @@ __metadata:
   dependencies:
     "@dynamic-labs/types": 3.0.0-alpha.13
   checksum: fda459071312d10dbf56a3c69eea984e1d31ebebf786fb92ed94ca7a9d86cc5947ab4971f88233add6f386ffa91d71f238fcc37ed9bddff9784d4f8328bc0cca
-  languageName: node
-  linkType: hard
-
-"@dynamic-labs/sdk-api-core@npm:0.0.460":
-  version: 0.0.460
-  resolution: "@dynamic-labs/sdk-api-core@npm:0.0.460"
-  checksum: 3a3e703d8b1787607df6c021dca5ef96948bfb1a3fef774d2fcb5bc50ea71717640d87e61ae6136687b75c3819f4bbd7e6fe0e6796aded96b2bfcb2684448ab2
   languageName: node
   linkType: hard
 
@@ -739,17 +723,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@dynamic-labs/types@npm:2.2.10":
-  version: 2.2.10
-  resolution: "@dynamic-labs/types@npm:2.2.10"
-  dependencies:
-    "@dynamic-labs/sdk-api-core": 0.0.460
-  peerDependencies:
-    viem: ^2.7.6
-  checksum: f3144e0f7938a02535954a8d3bef9a34eeb553b003b8b8e093a895ece3d52d154fb3729efb5f7cf928c5b520e54134a2922cc15e62faa13d5214b4adb490f693
-  languageName: node
-  linkType: hard
-
 "@dynamic-labs/types@npm:3.0.0-alpha.13":
   version: 3.0.0-alpha.13
   resolution: "@dynamic-labs/types@npm:3.0.0-alpha.13"
@@ -770,21 +743,6 @@ __metadata:
     stream: 0.0.2
     tldts: 6.0.16
   checksum: 417d3210e356c0eb77166086643fc2db6ba963999b4484a4688f0dc88c9ebf372e1c8c4940b03702f930bb0e10d54daeeb852377bb92ee4beb72d6e0c8847686
-  languageName: node
-  linkType: hard
-
-"@dynamic-labs/utils@npm:^2.2.10":
-  version: 2.2.10
-  resolution: "@dynamic-labs/utils@npm:2.2.10"
-  dependencies:
-    "@dynamic-labs/logger": 2.2.10
-    "@dynamic-labs/sdk-api-core": 0.0.460
-    "@dynamic-labs/types": 2.2.10
-    buffer: 6.0.3
-    tldts: 6.0.16
-  peerDependencies:
-    viem: ^2.7.6
-  checksum: d272b2d189e12c486c40de310df54db549644dcf026395c6646cfcdee9d07f318acebd622326ab515c92a07abb5f44086f18524e0fb0684501950a6068c187d2
   languageName: node
   linkType: hard
 
@@ -13975,7 +13933,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "se-2@workspace:."
   dependencies:
-    "@dynamic-labs/utils": ^2.2.10
     husky: ^8.0.1
     lint-staged: ^13.0.3
   languageName: unknown
