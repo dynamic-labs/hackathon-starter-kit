@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { ExternalLinkIcon, useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { useEffect, useState } from "react";
+import { ExternalLinkIcon, getNetwork, useDynamicContext, useSwitchNetwork } from "@dynamic-labs/sdk-react-core";
 import { createWalletClientFromWallet } from "@dynamic-labs/viem-utils";
 import { formatUnits } from "viem";
 import { baseSepolia } from "viem/chains";
@@ -26,6 +26,7 @@ import {
 const SafePage = () => {
   const { address, chain, isConnected } = useAccount();
   const { primaryWallet, isAuthenticated } = useDynamicContext();
+  const switchNetwork = useSwitchNetwork();
 
   const [safeDeployed, setSafeDeployed] = useState(false);
   const [safeAddress, setSafeAddress] = useState<string | null>("");
@@ -40,6 +41,7 @@ const SafePage = () => {
   const [crossChainRecipientAddress, setCrossChainRecipientAddress] = useState<string>("");
   const [transferTokenAddress, setTransferTokenAddress] = useState<string>("");
   const [recipientAddress, setRecipientAddress] = useState<string>("");
+  const [network, setNetwork] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const { data: safeBalance, refetch: refetchSafeBalance } = useBalance({
     address: (safeAddress || ("" as `0x${string}`)) as `0x${string}`,
@@ -53,12 +55,23 @@ const SafePage = () => {
     args: [safeAddress],
   });
 
+  const fetchNetwork = async () => {
+    if (!primaryWallet) return;
+    const network = Number(await getNetwork(primaryWallet.connector));
+    setNetwork(network);
+  };
+
+  useEffect(() => {
+    fetchNetwork();
+  }, [primaryWallet]);
+
   const handleDeploySafe = async () => {
     setLoading(true);
     setError(null);
     try {
       const userAddress = address as `0x${string}`;
       if (!primaryWallet || !chain) return;
+
       const walletClient = await createWalletClientFromWallet(primaryWallet);
       const { account } = await getPimlicoSmartAccountClient(userAddress, chain, walletClient);
       setSafeAddress(account.address);
@@ -362,21 +375,30 @@ const SafePage = () => {
         </div>
       ) : (
         <>
-          <button
-            className="btn btn-success"
-            onClick={handleDeploySafe}
-            disabled={loading || !isConnected || !isAuthenticated}
-          >
-            {loading ? (
-              <>
-                <span className="loading loading-spinner"></span>Deploying...
-              </>
-            ) : isConnected && isAuthenticated ? (
-              "Deploy Safe Account"
-            ) : (
-              "Connect Wallet first"
-            )}
-          </button>
+          {isConnected && isAuthenticated && network !== baseSepolia.id ? (
+            <button
+              className="btn btn-success"
+              onClick={() => switchNetwork({ wallet: primaryWallet, network: baseSepolia.id })}
+            >
+              Switch to Base Sepolia
+            </button>
+          ) : (
+            <button
+              className="btn btn-success"
+              onClick={handleDeploySafe}
+              disabled={loading || !isConnected || !isAuthenticated}
+            >
+              {loading ? (
+                <>
+                  <span className="loading loading-spinner"></span>Deploying...
+                </>
+              ) : isConnected && isAuthenticated ? (
+                "Deploy Safe Account"
+              ) : (
+                "Connect Wallet first"
+              )}
+            </button>
+          )}
           {error && <p className="text-red-500 mt-4">{error}</p>}
         </>
       )}

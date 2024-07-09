@@ -1,7 +1,7 @@
 import { Wallet } from "@dynamic-labs/sdk-react-core";
+import { NetworkConfigurationMap } from "@dynamic-labs/types";
 import { getOrMapViemChain } from "@dynamic-labs/viem-utils";
 import { Account, Chain, Hex, Transport, WalletClient, parseEther } from "viem";
-import { customEvmNetworks } from "~~/lib/networks";
 
 export const signMessage = async (message: string, wallet: any): Promise<string> => {
   const connector = wallet?.connector;
@@ -9,14 +9,19 @@ export const signMessage = async (message: string, wallet: any): Promise<string>
   return await connector.signMessage(message);
 };
 
-export const sendTransaction = async (address: any, amount: string, wallet: Wallet): Promise<string> => {
+export const sendTransaction = async (
+  address: any,
+  amount: string,
+  wallet: Wallet,
+  networkConfigurations: NetworkConfigurationMap,
+): Promise<string> => {
   const walletClient = wallet.connector.getWalletClient<WalletClient<Transport, Chain, Account>>();
 
   const chainID = await wallet.connector.getNetwork();
-  const currentNetwork = customEvmNetworks.find(network => network.chainId === chainID);
+  const currentNetwork = networkConfigurations.evm?.find(network => network.chainId === chainID);
 
   if (!currentNetwork) {
-    throw new Error("No chain ID found");
+    throw new Error("Network not found");
   }
 
   const chain = getOrMapViemChain(currentNetwork);

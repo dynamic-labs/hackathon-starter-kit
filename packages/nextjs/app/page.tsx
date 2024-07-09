@@ -9,7 +9,7 @@ import { Address } from "~~/components/scaffold-eth";
 import { sendTransaction, signMessage } from "~~/lib/dynamic";
 
 const Home: NextPage = () => {
-  const { primaryWallet } = useDynamicContext();
+  const { primaryWallet, networkConfigurations } = useDynamicContext();
   const [messageSignature, setMessageSignature] = useState<string>("");
   const [transactionSignature, setTransactionSignature] = useState<string>("");
   const connectedAddress = primaryWallet?.address;
@@ -33,7 +33,7 @@ const Home: NextPage = () => {
       if (!isTestnet) {
         alert("You might want to switch to testnet to send transactions");
       }
-      const hash = await sendTransaction(connectedAddress, "0.0001", primaryWallet);
+      const hash = await sendTransaction(connectedAddress, "0.0001", primaryWallet, networkConfigurations);
       setTransactionSignature(hash);
 
       setTimeout(() => {
