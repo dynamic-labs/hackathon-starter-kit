@@ -6,20 +6,34 @@ import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import type { NextPage } from "next";
 import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Address } from "~~/components/scaffold-eth";
-import { signMessage } from "~~/lib/dynamic";
+import { sendTransaction, signMessage } from "~~/lib/dynamic";
 
 const Home: NextPage = () => {
   const { primaryWallet } = useDynamicContext();
-  const [signature, setSignature] = useState<string>("");
+  const [messageSignature, setMessageSignature] = useState<string>("");
+  const [transactionSignature, setTransactionSignature] = useState<string>("");
   const connectedAddress = primaryWallet?.address;
 
   const handleSignMesssage = async () => {
     try {
       const signature = await signMessage("Hello World", primaryWallet);
-      setSignature(signature);
+      setMessageSignature(signature);
 
       setTimeout(() => {
-        setSignature("");
+        setMessageSignature("");
+      }, 10000);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleSendTransaction = async () => {
+    try {
+      const hash = await sendTransaction(connectedAddress, "0.0001", primaryWallet);
+      setMessageSignature(hash);
+
+      setTimeout(() => {
+        setTransactionSignature("");
       }, 10000);
     } catch (e) {
       console.error(e);
@@ -38,15 +52,19 @@ const Home: NextPage = () => {
             <p className="my-2 font-medium">Connected Address:</p>
             <Address address={connectedAddress} />
           </div>
-          {primaryWallet && !signature && (
+          {primaryWallet && !transactionSignature && (
             <div className="flex justify-center items-center space-x-2 flex-col sm:flex-row">
-              <p>Try signing a message!</p>
+              <button onClick={() => handleSendTransaction()} className="btn btn-primary">
+                Send 0.001 ETH to yourself
+              </button>
               <button onClick={() => handleSignMesssage()} className="btn btn-primary">
                 Sign Hello World
               </button>
             </div>
           )}
-          {primaryWallet && signature && <p className="text-center-text-lg">Message signed! {signature}</p>}
+          {primaryWallet && messageSignature && (
+            <p className="text-center-text-lg">Message signed! {messageSignature}</p>
+          )}
           <p className="text-center text-lg">
             Get started by editing{" "}
             <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
