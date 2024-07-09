@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ExternalLinkIcon, getNetwork, useDynamicContext, useSwitchNetwork } from "@dynamic-labs/sdk-react-core";
 import { createWalletClientFromWallet } from "@dynamic-labs/viem-utils";
 import { formatUnits } from "viem";
@@ -41,6 +41,7 @@ const SafePage = () => {
   const [crossChainRecipientAddress, setCrossChainRecipientAddress] = useState<string>("");
   const [transferTokenAddress, setTransferTokenAddress] = useState<string>("");
   const [recipientAddress, setRecipientAddress] = useState<string>("");
+  const [network, setNetwork] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const { data: safeBalance, refetch: refetchSafeBalance } = useBalance({
     address: (safeAddress || ("" as `0x${string}`)) as `0x${string}`,
@@ -53,6 +54,16 @@ const SafePage = () => {
     functionName: "balanceOf",
     args: [safeAddress],
   });
+
+  const fetchNetwork = async () => {
+    if (!primaryWallet) return;
+    const network = await getNetwork(primaryWallet.connector);
+    setNetwork(network);
+  };
+
+  useEffect(() => {
+    fetchNetwork();
+  }, [primaryWallet]);
 
   const handleDeploySafe = async () => {
     setLoading(true);
@@ -386,21 +397,30 @@ const SafePage = () => {
         </div>
       ) : (
         <>
-          <button
-            className="btn btn-success"
-            onClick={handleDeploySafe}
-            disabled={loading || !isConnected || !isAuthenticated}
-          >
-            {loading ? (
-              <>
-                <span className="loading loading-spinner"></span>Deploying...
-              </>
-            ) : isConnected && isAuthenticated ? (
-              "Deploy Safe Account"
-            ) : (
-              "Connect Wallet first"
-            )}
-          </button>
+          {isConnected && isAuthenticated && network !== baseSepolia.id ? (
+            <button
+              className="btn btn-success"
+              onClick={() => switchNetwork({ wallet: primaryWallet, network: baseSepolia.id })}
+            >
+              Switch to Base Sepolia
+            </button>
+          ) : (
+            <button
+              className="btn btn-success"
+              onClick={handleDeploySafe}
+              disabled={loading || !isConnected || !isAuthenticated}
+            >
+              {loading ? (
+                <>
+                  <span className="loading loading-spinner"></span>Deploying...
+                </>
+              ) : isConnected && isAuthenticated ? (
+                "Deploy Safe Account"
+              ) : (
+                "Connect Wallet first"
+              )}
+            </button>
+          )}
           {error && <p className="text-red-500 mt-4">{error}</p>}
         </>
       )}
