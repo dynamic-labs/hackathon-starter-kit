@@ -1,13 +1,37 @@
 import { getOrMapViemChain } from "@dynamic-labs/viem-utils";
 import { Chain, createClient, http } from "viem";
-import { baseSepolia, hardhat, mainnet } from "viem/chains";
+import {
+  arbitrum,
+  arbitrumSepolia,
+  base,
+  baseSepolia,
+  hardhat,
+  mainnet,
+  polygon,
+  polygonAmoy,
+  scroll,
+  scrollSepolia,
+  sepolia,
+} from "viem/chains";
 import { createConfig } from "wagmi";
 import { customEvmNetworks } from "~~/lib/networks";
 import scaffoldConfig from "~~/scaffold.config";
 import { getAlchemyHttpUrl } from "~~/utils/scaffold-eth";
 
 export const wagmiConfig = createConfig({
-  chains: [baseSepolia, mainnet, ...customEvmNetworks.map(getOrMapViemChain)],
+  chains: [
+    arbitrum,
+    arbitrumSepolia,
+    base,
+    baseSepolia,
+    mainnet,
+    polygon,
+    polygonAmoy,
+    scroll,
+    scrollSepolia,
+    sepolia,
+    ...customEvmNetworks.map(getOrMapViemChain),
+  ],
   ssr: true,
   client({ chain }) {
     return createClient({
