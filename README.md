@@ -1,5 +1,6 @@
 #  🏗 Scaffold-ETH 2 (EthGlobal Starter Kit Version)
 
+![](./banner.png)
 
 <h4 align="center">
   <a href="https://docs.scaffoldeth.io">Documentation</a> |
@@ -78,8 +79,6 @@ Visit our [docs](https://docs.scaffoldeth.io) to learn how to start building wit
 To know more about its features, check out our [website](https://scaffoldeth.io).
 
 # Hacker Kit Implementation
-
-![](./banner.png)
 
 ## Overview
 
