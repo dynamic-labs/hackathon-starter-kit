@@ -41,26 +41,6 @@ export const queryClient = new QueryClient({
 export const ScaffoldEthAppWithProviders = ({ children }: { children: React.ReactNode }) => {
   const { resolvedTheme } = useTheme();
 
-  /**
-   * For more information on the `evmNetworks` object, see:
-   * https://docs.dynamic.xyz/chains/evmNetwork#custom-evm-networks-evmnetwork
-   */
-
-  const evmNetworks = [
-    ...scaffoldConfig.targetNetworks.map(chain => ({
-      blockExplorerUrls: chain.blockExplorers
-        ? Object.values(chain.blockExplorers as any).map(({ url }: any) => url)
-        : [],
-      chainId: chain.id,
-      name: chain.name,
-      rpcUrls: Object.values(chain.rpcUrls).map(({ http }) => http[0]),
-      iconUrls: [],
-      nativeCurrency: chain.nativeCurrency,
-      networkId: chain.id,
-    })),
-    ...customEvmNetworks,
-  ];
-
   return (
     <DynamicContextProvider
       theme={resolvedTheme === "dark" ? "dark" : "light"}
@@ -68,7 +48,7 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
         environmentId: scaffoldConfig.dynamicEnvId,
         walletConnectors: [EthereumWalletConnectors],
         overrides: {
-          evmNetworks: networks => mergeNetworks(evmNetworks, networks),
+          evmNetworks: networks => mergeNetworks(customEvmNetworks, networks),
         },
       }}
     >
