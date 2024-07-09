@@ -29,8 +29,12 @@ const Home: NextPage = () => {
 
   const handleSendTransaction = async () => {
     try {
+      const isTestnet = await primaryWallet?.connector?.isTestnet();
+      if (!isTestnet) {
+        alert("You might want to switch to testnet to send transactions");
+      }
       const hash = await sendTransaction(connectedAddress, "0.0001", primaryWallet);
-      setMessageSignature(hash);
+      setTransactionSignature(hash);
 
       setTimeout(() => {
         setTransactionSignature("");
@@ -64,6 +68,9 @@ const Home: NextPage = () => {
           )}
           {primaryWallet && messageSignature && (
             <p className="text-center-text-lg">Message signed! {messageSignature}</p>
+          )}
+          {primaryWallet && transactionSignature && (
+            <p className="text-center-text-lg">Transaction processed! {transactionSignature}</p>
           )}
           <p className="text-center text-lg">
             Get started by editing{" "}

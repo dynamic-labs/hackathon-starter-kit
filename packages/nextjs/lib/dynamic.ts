@@ -1,5 +1,5 @@
 import { getChain } from "@dynamic-labs/viem-utils";
-import { Account, Chain, Hex, PublicClient, Transport, WalletClient, parseEther } from "viem";
+import { Account, Chain, Hex, Transport, WalletClient, parseEther } from "viem";
 
 export const signMessage = async (message: string, wallet: any): Promise<string> => {
   if (!wallet) {
@@ -39,13 +39,7 @@ export const sendTransaction = async (address: any, amount: string, wallet: any)
     value: amount ? parseEther(amount) : undefined,
   };
 
-  const hash = await provider.sendTransaction(transaction);
-
-  const client: PublicClient = await wallet.connector.getPublicClient();
-
-  const { transactionHash } = await client.getTransactionReceipt({
-    hash,
-  });
+  const transactionHash = await provider.sendTransaction(transaction);
 
   return transactionHash;
 };
