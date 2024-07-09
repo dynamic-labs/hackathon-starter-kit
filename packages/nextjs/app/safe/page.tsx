@@ -57,7 +57,7 @@ const SafePage = () => {
 
   const fetchNetwork = async () => {
     if (!primaryWallet) return;
-    const network = await getNetwork(primaryWallet.connector);
+    const network = Number(await getNetwork(primaryWallet.connector));
     setNetwork(network);
   };
 
@@ -69,15 +69,8 @@ const SafePage = () => {
     setLoading(true);
     setError(null);
     try {
-      if (!primaryWallet) return;
-      const network = await getNetwork(primaryWallet.connector);
-
-      if (network !== baseSepolia.id) {
-        switchNetwork({ wallet: primaryWallet, network: baseSepolia.id });
-      }
       const userAddress = address as `0x${string}`;
-      console.log(chain);
-      if (!chain) return;
+      if (!primaryWallet || !chain) return;
 
       const walletClient = await createWalletClientFromWallet(primaryWallet);
       const { account } = await getPimlicoSmartAccountClient(userAddress, chain, walletClient);
@@ -97,16 +90,8 @@ const SafePage = () => {
     setLoading(true);
     setError(null);
     try {
-      if (!primaryWallet) return;
-      const network = await getNetwork(primaryWallet.connector);
-
-      if (network !== baseSepolia.id) {
-        switchNetwork({ wallet: primaryWallet, network: baseSepolia.id });
-      }
-
       const userAddress = address as `0x${string}`;
-      if (!chain) return;
-
+      if (!primaryWallet || !chain) return;
       const walletClient = await createWalletClientFromWallet(primaryWallet);
       const smartAccountClient = await getPimlicoSmartAccountClient(userAddress, chain, walletClient);
       const txHash = await transferERC20(
@@ -142,15 +127,8 @@ const SafePage = () => {
     setLoading(true);
     setError(null);
     try {
-      if (!primaryWallet) return;
-      const network = await getNetwork(primaryWallet.connector);
-
-      if (network !== baseSepolia.id) {
-        switchNetwork({ wallet: primaryWallet, network: baseSepolia.id });
-      }
-
       const userAddress = address as `0x${string}`;
-      if (!chain) return;
+      if (!primaryWallet || !chain) return;
       const walletClient = await createWalletClientFromWallet(primaryWallet);
       const smartAccountClient = await getPimlicoSmartAccountClient(userAddress, chain, walletClient);
       const approveHash = await approveERC20(
