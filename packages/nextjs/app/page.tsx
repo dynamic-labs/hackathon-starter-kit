@@ -1,15 +1,30 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import type { NextPage } from "next";
-import { useAccount } from "wagmi";
 import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Address } from "~~/components/scaffold-eth";
-
-// app/page.tsx
+import { signMessage } from "~~/lib/dynamic";
 
 const Home: NextPage = () => {
-  const { address: connectedAddress } = useAccount();
+  const { primaryWallet } = useDynamicContext();
+  const [signature, setSignature] = useState<string>("");
+  const connectedAddress = primaryWallet?.address;
+
+  const handleSignMesssage = async () => {
+    try {
+      const signature = await signMessage("Hello World", primaryWallet);
+      setSignature(signature);
+
+      setTimeout(() => {
+        setSignature("");
+      }, 10000);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   return (
     <>
@@ -23,6 +38,15 @@ const Home: NextPage = () => {
             <p className="my-2 font-medium">Connected Address:</p>
             <Address address={connectedAddress} />
           </div>
+          {primaryWallet && !signature && (
+            <div className="flex justify-center items-center space-x-2 flex-col sm:flex-row">
+              <p>Try signing a message!</p>
+              <button onClick={() => handleSignMesssage()} className="btn btn-primary">
+                Sign Hello World
+              </button>
+            </div>
+          )}
+          {primaryWallet && signature && <p className="text-center-text-lg">Message signed! {signature}</p>}
           <p className="text-center text-lg">
             Get started by editing{" "}
             <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
