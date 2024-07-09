@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ExternalLinkIcon, useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { ExternalLinkIcon, getNetwork, useDynamicContext, useSwitchNetwork } from "@dynamic-labs/sdk-react-core";
 import { createWalletClientFromWallet } from "@dynamic-labs/viem-utils";
 import { formatUnits } from "viem";
 import { baseSepolia } from "viem/chains";
@@ -26,6 +26,7 @@ import {
 const SafePage = () => {
   const { address, chain, isConnected } = useAccount();
   const { primaryWallet, isAuthenticated } = useDynamicContext();
+  const switchNetwork = useSwitchNetwork();
 
   const [safeDeployed, setSafeDeployed] = useState(false);
   const [safeAddress, setSafeAddress] = useState<string | null>("");
@@ -57,8 +58,16 @@ const SafePage = () => {
     setLoading(true);
     setError(null);
     try {
+      if (!primaryWallet) return;
+      const network = await getNetwork(primaryWallet.connector);
+
+      if (network !== baseSepolia.id) {
+        switchNetwork({ wallet: primaryWallet, network: baseSepolia.id });
+      }
       const userAddress = address as `0x${string}`;
-      if (!primaryWallet || !chain) return;
+      console.log(chain);
+      if (!chain) return;
+
       const walletClient = await createWalletClientFromWallet(primaryWallet);
       const { account } = await getPimlicoSmartAccountClient(userAddress, chain, walletClient);
       setSafeAddress(account.address);
@@ -77,8 +86,16 @@ const SafePage = () => {
     setLoading(true);
     setError(null);
     try {
+      if (!primaryWallet) return;
+      const network = await getNetwork(primaryWallet.connector);
+
+      if (network !== baseSepolia.id) {
+        switchNetwork({ wallet: primaryWallet, network: baseSepolia.id });
+      }
+
       const userAddress = address as `0x${string}`;
-      if (!primaryWallet || !chain) return;
+      if (!chain) return;
+
       const walletClient = await createWalletClientFromWallet(primaryWallet);
       const smartAccountClient = await getPimlicoSmartAccountClient(userAddress, chain, walletClient);
       const txHash = await transferERC20(
@@ -114,8 +131,15 @@ const SafePage = () => {
     setLoading(true);
     setError(null);
     try {
+      if (!primaryWallet) return;
+      const network = await getNetwork(primaryWallet.connector);
+
+      if (network !== baseSepolia.id) {
+        switchNetwork({ wallet: primaryWallet, network: baseSepolia.id });
+      }
+
       const userAddress = address as `0x${string}`;
-      if (!primaryWallet || !chain) return;
+      if (!chain) return;
       const walletClient = await createWalletClientFromWallet(primaryWallet);
       const smartAccountClient = await getPimlicoSmartAccountClient(userAddress, chain, walletClient);
       const approveHash = await approveERC20(
