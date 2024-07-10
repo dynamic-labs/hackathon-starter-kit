@@ -38,6 +38,25 @@ export const queryClient = new QueryClient({
   },
 });
 
+const evmNetworks = [
+  ...scaffoldConfig.targetNetworks.map(chain => ({
+    blockExplorerUrls: chain.blockExplorers
+      ? Object.values(chain.blockExplorers as any).map(({ url }: any) => url)
+      : [],
+    chainId: chain.id,
+    name: chain.name,
+    rpcUrls: Object.values(chain.rpcUrls).map(({ http }) => http[0]),
+    iconUrls: [
+      chain.name === "Hardhat"
+        ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRz4i1wWF516fnkizp1WSDG5rnG8GfkQAVoVQ&s"
+        : "",
+    ],
+    nativeCurrency: chain.nativeCurrency,
+    networkId: chain.id,
+  })),
+  ...customEvmNetworks,
+];
+
 export const ScaffoldEthAppWithProviders = ({ children }: { children: React.ReactNode }) => {
   const { resolvedTheme } = useTheme();
 
@@ -48,7 +67,7 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
         environmentId: scaffoldConfig.dynamicEnvId,
         walletConnectors: [EthereumWalletConnectors],
         overrides: {
-          evmNetworks: networks => mergeNetworks(customEvmNetworks, networks),
+          evmNetworks: networks => mergeNetworks(evmNetworks, networks),
         },
       }}
     >

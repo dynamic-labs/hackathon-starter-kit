@@ -22,6 +22,7 @@ import {
   getPimlicoSmartAccountClient,
   transferERC20,
 } from "~~/lib/permissionless";
+import { notification } from "~~/utils/scaffold-eth";
 
 const SafePage = () => {
   const { address, chain, isConnected } = useAccount();
@@ -62,6 +63,12 @@ const SafePage = () => {
   };
 
   useEffect(() => {
+    if (!process.env.NEXT_PUBLIC_PIMLICO_API_KEY) {
+      notification.error("Please set NEXT_PUBLIC_PIMLICO_API_KEY in .env file.");
+    }
+  }, []);
+
+  useEffect(() => {
     fetchNetwork();
   }, [primaryWallet]);
 
@@ -71,6 +78,11 @@ const SafePage = () => {
     try {
       const userAddress = address as `0x${string}`;
       if (!primaryWallet || !chain) return;
+
+      if (!process.env.NEXT_PUBLIC_PIMLICO_API_KEY) {
+        notification.error("Please set NEXT_PUBLIC_PIMLICO_API_KEY in .env file and restart");
+        return;
+      }
 
       const walletClient = await createWalletClientFromWallet(primaryWallet);
       const { account } = await getPimlicoSmartAccountClient(userAddress, chain, walletClient);
@@ -150,8 +162,13 @@ const SafePage = () => {
       const transactionDetail = await getTransactionOnBaseSepoliaByHash(txHash);
       setTransactionDetails([...transactionDetails, transactionDetail]);
     } catch (err) {
-      setError("Failed to transfer tokens.");
-      console.error(err);
+      if (err instanceof Error) {
+        notification.error(err.message);
+        console.error(err.message);
+      } else {
+        setError("Failed to transfer tokens.");
+        console.error(err);
+      }
     } finally {
       setLoading(false);
     }

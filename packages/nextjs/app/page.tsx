@@ -31,7 +31,7 @@ const Home: NextPage = () => {
     try {
       const isTestnet = await primaryWallet?.connector?.isTestnet();
       if (!isTestnet) {
-        alert("You might want to switch to testnet to send transactions");
+        alert("You're not on a testnet, proceed with caution.");
       }
       const hash = await sendTransaction(connectedAddress, "0.0001", primaryWallet, networkConfigurations);
       setTransactionSignature(hash);
