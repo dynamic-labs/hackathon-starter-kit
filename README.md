@@ -1,4 +1,4 @@
-#  🏗 Scaffold-ETH 2 (EthGlobal Starter Kit Version)
+#  🏗 Scaffold-ETH 2 (Hackathon Starter Kit Version)
 
 ![](./banner.png)
 
