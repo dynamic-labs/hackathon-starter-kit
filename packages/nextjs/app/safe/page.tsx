@@ -9,7 +9,12 @@ import { useAccount, useBalance, useReadContract } from "wagmi";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import { ClipboardIcon } from "@heroicons/react/24/outline";
 import { ERC20_ABI } from "~~/lib/ABI";
-import { TransactionDetails, getTransactionOnBaseSepoliaByHash } from "~~/lib/blockscout";
+import {
+  TransactionDetails,
+  getTokenTransfersOnBaseSepolia,
+  getTransactionOnBaseSepoliaByHash,
+  getTransactionsOnBaseSepolia,
+} from "~~/lib/blockscout";
 import {
   BASE_SEPOLIA_BLOCKSCOUT_TX_BASE_URL,
   CROSSCHAIN_TRANSFER_CONTRACT_BASE_SEPOLIA,
@@ -33,7 +38,8 @@ const SafePage = () => {
   const [safeAddress, setSafeAddress] = useState<string | null>("");
 
   const [transactions, setTransactions] = useState<string[]>([]);
-  const [transactionDetails, setTransactionDetails] = useState<TransactionDetails[]>([]); // TransactionDetails[
+  const [transactionDetails, setTransactionDetails] = useState<TransactionDetails[]>([]);
+  const [transferDetails, setTransferDetails] = useState<TransactionDetails[]>([]);
   const [refreshingTransactions, setRefreshingTransactions] = useState(false);
   const [loading, setLoading] = useState(false);
   const [transferAmount, setTransferAmount] = useState<number>(0);
@@ -48,6 +54,29 @@ const SafePage = () => {
     address: (safeAddress || ("" as `0x${string}`)) as `0x${string}`,
     chainId: chain?.id,
   });
+
+  function extractAndDecodeHexString(input: string) {
+    // Regular expression to match a hexadecimal string
+    const hexPattern = /0x[0-9A-Fa-f]+/;
+
+    // Match the input string against the pattern
+    const match = input.match(hexPattern);
+
+    // Return the decoded hex string or null if no match is found
+    if (match) {
+      const hexString = match[0];
+      // Remove the '0x' prefix
+      const cleanedHexString = hexString.slice(2);
+      // Decode the hex string
+      let decodedString = "";
+      for (let i = 0; i < cleanedHexString.length; i += 2) {
+        decodedString += String.fromCharCode(parseInt(cleanedHexString.substr(i, 2), 16));
+      }
+      return decodedString;
+    } else {
+      return null;
+    }
+  }
 
   const { data: safeUSDCBalance, refetch: refetchSafeUSDCBalance } = useReadContract({
     abi: ERC20_ABI,
@@ -112,6 +141,9 @@ const SafePage = () => {
         BigInt(transferAmount * 10 ** 6),
         recipientAddress,
       );
+
+      notification.success("Crosschain transfer initiated successfully: " + txHash);
+      console.log("txHash", txHash);
       setTransactions([...transactions, txHash]);
       const transactionDetail = await getTransactionOnBaseSepoliaByHash(txHash);
       setTransactionDetails([...transactionDetails, transactionDetail]);
@@ -127,11 +159,26 @@ const SafePage = () => {
     setRefreshingTransactions(true);
     setTransactionDetails([]);
     const txDetails = [];
+
+    setTransferDetails([]);
+    const transferDetails = [];
+
+    if (!primaryWallet) return;
+    const transactions = await getTransactionsOnBaseSepolia(primaryWallet.address);
+    const transfers = await getTokenTransfersOnBaseSepolia(primaryWallet.address);
+
     for (const txHash of transactions) {
       const transactionDetail = await getTransactionOnBaseSepoliaByHash(txHash);
       txDetails.push(transactionDetail);
       setTransactionDetails(txDetails);
     }
+
+    for (const transfer of transfers) {
+      const transactionDetail = await getTransactionOnBaseSepoliaByHash(transfer.tx_hash);
+      transferDetails.push(transactionDetail);
+      setTransferDetails(transferDetails);
+    }
+
     setRefreshingTransactions(false);
   };
 
@@ -157,14 +204,22 @@ const SafePage = () => {
         BigInt(crossChainTransferAmount * 10 ** 6),
         crossChainRecipientAddress,
       );
+
+      notification.success("Crosschain transfer initiated successfully: " + txHash);
       console.log("txHash", txHash);
       setTransactions([...transactions, txHash]);
       const transactionDetail = await getTransactionOnBaseSepoliaByHash(txHash);
-      setTransactionDetails([...transactionDetails, transactionDetail]);
+      setTransferDetails([...transactionDetails, transactionDetail]);
     } catch (err) {
       if (err instanceof Error) {
-        notification.error(err.message);
-        console.error(err.message);
+        const hasHexError = extractAndDecodeHexString((err as any).details);
+        if (hasHexError !== null) {
+          notification.error(hasHexError);
+          console.error(hasHexError);
+        } else {
+          notification.error((error as any).details);
+          console.error((error as any).details);
+        }
       } else {
         setError("Failed to transfer tokens.");
         console.error(err);
@@ -214,6 +269,9 @@ const SafePage = () => {
                 <div className="flex flex-row items-center gap-2">
                   <CheckCircleIcon className="w-6 h-6" />
                   <div className="font-bold text-lg">Safe Smart Wallet deployed!</div>
+                  <a className="btn btn-secondary" href="https://faucet.circle.com/" rel="noopener" target="_blank">
+                    Fund it from Faucet
+                  </a>
                 </div>
                 <div className="flex flex-row items-center gap-4">
                   <p>Address: {safeAddress}</p>
@@ -372,6 +430,19 @@ const SafePage = () => {
                 {!refreshingTransactions && (
                   <div className="flex flex-col gap-1">
                     {transactionDetails.map(tx => (
+                      <div className="flex flex-col gap-1" key={tx.hash}>
+                        <div className="flex flex-row gap-8">
+                          <a target="_blank" href={`${BASE_SEPOLIA_BLOCKSCOUT_TX_BASE_URL}/${tx.hash}`}>
+                            <div className="flex flex-row gap-2 items-center">
+                              {`${tx.hash.substring(0, 8)}...${tx.hash.substring(tx.hash.length - 8)}`}
+                              <ExternalLinkIcon />
+                            </div>
+                          </a>
+                          <div>{toMinsAgo(tx.timestamp)}</div>
+                        </div>
+                      </div>
+                    ))}
+                    {transferDetails.map(tx => (
                       <div className="flex flex-col gap-1" key={tx.hash}>
                         <div className="flex flex-row gap-8">
                           <a target="_blank" href={`${BASE_SEPOLIA_BLOCKSCOUT_TX_BASE_URL}/${tx.hash}`}>

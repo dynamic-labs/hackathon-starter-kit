@@ -15,7 +15,7 @@ export const sendTransaction = async (
   amount: string,
   wallet: Wallet,
   networkConfigurations: NetworkConfigurationMap,
-): Promise<string> => {
+): Promise<string | undefined> => {
   try {
     const walletClient = wallet.connector.getWalletClient<WalletClient<Transport, Chain, Account>>();
 
