@@ -49,6 +49,29 @@ const SafePage = () => {
     chainId: chain?.id,
   });
 
+  function extractAndDecodeHexString(input: string) {
+    // Regular expression to match a hexadecimal string
+    const hexPattern = /0x[0-9A-Fa-f]+/;
+
+    // Match the input string against the pattern
+    const match = input.match(hexPattern);
+
+    // Return the decoded hex string or null if no match is found
+    if (match) {
+      const hexString = match[0];
+      // Remove the '0x' prefix
+      const cleanedHexString = hexString.slice(2);
+      // Decode the hex string
+      let decodedString = "";
+      for (let i = 0; i < cleanedHexString.length; i += 2) {
+        decodedString += String.fromCharCode(parseInt(cleanedHexString.substr(i, 2), 16));
+      }
+      return decodedString;
+    } else {
+      return null;
+    }
+  }
+
   const { data: safeUSDCBalance, refetch: refetchSafeUSDCBalance } = useReadContract({
     abi: ERC20_ABI,
     address: chain ? USDC_ADDRESS[chain?.id] : ("" as `0x${string}`),
@@ -163,8 +186,14 @@ const SafePage = () => {
       setTransactionDetails([...transactionDetails, transactionDetail]);
     } catch (err) {
       if (err instanceof Error) {
-        notification.error(err.message);
-        console.error(err.message);
+        const hasHexError = extractAndDecodeHexString((err as any).details);
+        if (hasHexError !== null) {
+          notification.error(hasHexError);
+          console.error(hasHexError);
+        } else {
+          notification.error((error as any).details);
+          console.error((error as any).details);
+        }
       } else {
         setError("Failed to transfer tokens.");
         console.error(err);
