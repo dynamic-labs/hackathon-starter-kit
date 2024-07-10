@@ -30,6 +30,7 @@ export const wagmiConfig = createConfig({
     scroll,
     scrollSepolia,
     sepolia,
+    hardhat,
     ...customEvmNetworks.map(getOrMapViemChain),
   ],
   ssr: true,
