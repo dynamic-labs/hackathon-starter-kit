@@ -16,7 +16,6 @@ import {
   USDC_ADDRESS,
 } from "~~/lib/constants";
 import { toMinsAgo } from "~~/lib/date-utils";
-import { sendTransaction } from "~~/lib/dynamic";
 import {
   approveERC20,
   crossChainTransferERC20,
@@ -27,7 +26,7 @@ import { notification } from "~~/utils/scaffold-eth";
 
 const SafePage = () => {
   const { address, chain, isConnected } = useAccount();
-  const { primaryWallet, isAuthenticated, networkConfigurations } = useDynamicContext();
+  const { primaryWallet, isAuthenticated } = useDynamicContext();
   const switchNetwork = useSwitchNetwork();
 
   const [safeDeployed, setSafeDeployed] = useState(false);
@@ -95,20 +94,6 @@ const SafePage = () => {
   useEffect(() => {
     fetchNetwork();
   }, [primaryWallet]);
-
-  const handleFundSafeAccount = async () => {
-    if (!safeAddress || !primaryWallet || !networkConfigurations) return;
-
-    const balance = (await Number(primaryWallet.connector.getBalance())) || 0;
-
-    if (balance < 0.001) {
-      notification.error("Insufficient balance to fund Safe account with 0.001 Base Sepolia");
-      return;
-    }
-
-    const hash = await sendTransaction(safeAddress, "0.001", primaryWallet, networkConfigurations);
-    notification.success(`Funded Safe account with 0.001 Sepolia. Tx: ${hash}`);
-  };
 
   const handleDeploySafe = async () => {
     setLoading(true);
@@ -258,13 +243,9 @@ const SafePage = () => {
                 <div className="flex flex-row items-center gap-2">
                   <CheckCircleIcon className="w-6 h-6" />
                   <div className="font-bold text-lg">Safe Smart Wallet deployed!</div>
-                  <button
-                    disabled={!safeAddress || !primaryWallet || !networkConfigurations}
-                    className="btn btn-secondary"
-                    onClick={() => handleFundSafeAccount()}
-                  >
-                    Fund it with 0.001 Sepolia
-                  </button>
+                  <a className="btn btn-secondary" href="https://faucet.circle.com/" rel="noopener" target="_blank">
+                    Fund it from Faucet
+                  </a>
                 </div>
                 <div className="flex flex-row items-center gap-4">
                   <p>Address: {safeAddress}</p>
