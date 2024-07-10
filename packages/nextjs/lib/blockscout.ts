@@ -59,3 +59,15 @@ export const getTransactionOnBaseSepoliaByHash = async (txHash: string): Promise
   const response = await fetch(`https://base-sepolia.blockscout.com/api/v2/transactions/${txHash}`);
   return response.json();
 };
+
+export const getTokenTransfersOnBaseSepolia = async (address: string) => {
+  const response = await fetch(`https://base-sepolia.blockscout.com/api/v2/addresses/${address}/token-transfers?type=`);
+  const json = await response.json();
+  return json.items;
+};
+
+export const getTransactionsOnBaseSepolia = async (address: string) => {
+  const response = await fetch(`https://base-sepolia.blockscout.com/api/v2/addresses/${address}/transactions`);
+  const json = await response.json();
+  return json.items;
+};
