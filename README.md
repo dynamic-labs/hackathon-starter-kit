@@ -17,6 +17,7 @@ Before you begin, you need to install the following tools:
 - [Git](https://git-scm.com/downloads)
 
 - You have to get a [Pimlico API key](https://dashboard.pimlico.io/sign-in) and put it in your env file (`NEXT_PUBLIC_PIMLICO_API_KEY`).
+- You have to get a [Lighthouse Storage API key](https://docs.lighthouse.storage/lighthouse-1/how-to/create-an-api-key) and add it to the env file(`NEXT_PUBLIC_LIGHTHOUSE_API_KEY`)
 
 - You should send some ERC20 (USDC is better) to your Safe smart wallet in order to use the transfer and cross-chain transfer capabilities.
 
