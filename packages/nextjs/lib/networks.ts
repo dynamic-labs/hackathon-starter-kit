@@ -1,5 +1,31 @@
 export const customEvmNetworks = [
   {
+    blockExplorerUrls: ["https://filfox.info/en"],
+    chainId: 314,
+    name: "Filecoin",
+    rpcUrls: ["https://api.node.glif.io/rpc/v1"],
+    iconUrls: ["https://avatars.githubusercontent.com/u/22014611?s=200&v=4"],
+    nativeCurrency: {
+      name: "Filecoin",
+      symbol: "FIL",
+      decimals: 18,
+    },
+    networkId: 314,
+  },
+  {
+    blockExplorerUrls: ["https://calibration.filfox.info/en"],
+    chainId: 314159,
+    name: "Filecoin Calibration",
+    rpcUrls: ["https://api.calibration.node.glif.io/rpc/v1"],
+    iconUrls: ["https://avatars.githubusercontent.com/u/22014611?s=200&v=4"],
+    nativeCurrency: {
+      name: "Filecoin",
+      symbol: "FIL",
+      decimals: 18,
+    },
+    networkId: 314159,
+  },
+  {
     blockExplorerUrls: ["https://explorer-holesky.morphl2.io/"],
     chainId: 2810,
     name: "Morph",
