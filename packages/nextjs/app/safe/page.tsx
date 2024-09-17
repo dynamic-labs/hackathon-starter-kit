@@ -1,8 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ExternalLinkIcon, getNetwork, useDynamicContext, useSwitchNetwork } from "@dynamic-labs/sdk-react-core";
-import { createWalletClientFromWallet } from "@dynamic-labs/viem-utils";
+import {
+  ExternalLinkIcon,
+  getNetwork,
+  useDynamicContext,
+  useIsLoggedIn,
+  useSwitchNetwork,
+} from "@dynamic-labs/sdk-react-core";
 import { formatUnits } from "viem";
 import { baseSepolia } from "viem/chains";
 import { useAccount, useBalance, useReadContract } from "wagmi";
@@ -31,7 +36,8 @@ import { notification } from "~~/utils/scaffold-eth";
 
 const SafePage = () => {
   const { address, chain, isConnected } = useAccount();
-  const { primaryWallet, isAuthenticated } = useDynamicContext();
+  const { primaryWallet } = useDynamicContext();
+  const isLoggedIn = useIsLoggedIn();
   const switchNetwork = useSwitchNetwork();
 
   const [safeDeployed, setSafeDeployed] = useState(false);
@@ -85,12 +91,6 @@ const SafePage = () => {
     args: [safeAddress],
   });
 
-  const fetchNetwork = async () => {
-    if (!primaryWallet) return;
-    const network = Number(await getNetwork(primaryWallet.connector));
-    setNetwork(network);
-  };
-
   useEffect(() => {
     if (!process.env.NEXT_PUBLIC_PIMLICO_API_KEY) {
       notification.error("Please set NEXT_PUBLIC_PIMLICO_API_KEY in .env file.");
@@ -98,6 +98,12 @@ const SafePage = () => {
   }, []);
 
   useEffect(() => {
+    const fetchNetwork = async () => {
+      if (!primaryWallet) return;
+      const network = Number(await getNetwork(primaryWallet.connector));
+      setNetwork(network);
+    };
+
     fetchNetwork();
   }, [primaryWallet]);
 
@@ -113,7 +119,7 @@ const SafePage = () => {
         return;
       }
 
-      const walletClient = await createWalletClientFromWallet(primaryWallet);
+      const walletClient = await primaryWallet.getWalletClient();
       const { account } = await getPimlicoSmartAccountClient(userAddress, chain, walletClient);
       setSafeAddress(account.address);
       setSafeDeployed(true);
@@ -463,7 +469,7 @@ const SafePage = () => {
         </div>
       ) : (
         <>
-          {isConnected && isAuthenticated && network !== baseSepolia.id ? (
+          {isConnected && isLoggedIn && network !== baseSepolia.id ? (
             <button
               className="btn btn-success"
               onClick={() => switchNetwork({ wallet: primaryWallet, network: baseSepolia.id })}
@@ -474,13 +480,13 @@ const SafePage = () => {
             <button
               className="btn btn-success"
               onClick={handleDeploySafe}
-              disabled={loading || !isConnected || !isAuthenticated}
+              disabled={loading || !isConnected || !isLoggedIn}
             >
               {loading ? (
                 <>
                   <span className="loading loading-spinner"></span>Deploying...
                 </>
-              ) : isConnected && isAuthenticated ? (
+              ) : isConnected && isLoggedIn ? (
                 "Deploy Safe Account"
               ) : (
                 "Connect Wallet first"

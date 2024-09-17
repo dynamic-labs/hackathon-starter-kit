@@ -1,4 +1,4 @@
-import { getOrMapViemChain } from "@dynamic-labs/viem-utils";
+import { getOrMapViemChain } from "@dynamic-labs/ethereum-core";
 import { Chain, createClient, http } from "viem";
 import {
   arbitrum,

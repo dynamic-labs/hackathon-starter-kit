@@ -15,10 +15,10 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
-    "@dynamic-labs/ethereum": "^3.0.0-alpha.13",
-    "@dynamic-labs/sdk-react-core": "^3.0.0-alpha.13",
-    "@dynamic-labs/viem-utils": "3.0.0-alpha.13",
-    "@dynamic-labs/wagmi-connector": "^3.0.0-alpha.13",
+    "@dynamic-labs/ethereum": "^3.0.0",
+    "@dynamic-labs/ethereum-core": "3.0.0",
+    "@dynamic-labs/sdk-react-core": "^3.0.0",
+    "@dynamic-labs/wagmi-connector": "^3.0.0",
     "@heroicons/react": "^2.0.11",
     "@lighthouse-web3/sdk": "^0.3.7",
     "@safe-global/api-kit": "^2.4.2",
