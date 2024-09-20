@@ -2,16 +2,23 @@
 
 import { useEffect, useState } from "react";
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from "./smartcontract";
-import { ExternalLinkIcon, getNetwork, useDynamicContext, useSwitchNetwork } from "@dynamic-labs/sdk-react-core";
+import {
+  ExternalLinkIcon,
+  getNetwork,
+  useDynamicContext,
+  useIsLoggedIn,
+  useSwitchNetwork,
+  useWalletConnectorEvent,
+} from "@dynamic-labs/sdk-react-core";
 import lighthouse from "@lighthouse-web3/sdk";
 import { ethers } from "ethers";
 import { filecoinCalibration } from "viem/chains";
-import { useAccount, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { notification } from "~~/utils/scaffold-eth";
 
 const FVMPage = () => {
-  const { isConnected } = useAccount();
-  const { primaryWallet, isAuthenticated } = useDynamicContext();
+  const isLoggedIn = useIsLoggedIn();
+  const { primaryWallet } = useDynamicContext();
   const switchNetwork = useSwitchNetwork();
   const { data: hash, isPending, writeContract } = useWriteContract();
 
@@ -24,6 +31,11 @@ const FVMPage = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [step, setStep] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  useWalletConnectorEvent(primaryWallet?.connector, "chainChange", async ({ chain }) => {
+    setNetwork(parseInt(chain));
+  });
 
   const fetchNetwork = async () => {
     if (!primaryWallet) return;
@@ -68,6 +80,7 @@ const FVMPage = () => {
   };
 
   const handleSubmitRaas = async () => {
+    setIsSubmitting(true);
     try {
       const fileLinkBytes = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(hostedLink));
       await writeContract({
@@ -76,18 +89,19 @@ const FVMPage = () => {
         functionName: "submitRaaS",
         args: [fileLinkBytes, 2, 4, 40],
       });
+      setStep(2); // Move to step 3 after successful submission
     } catch (err) {
       setError("Failed to submit file.");
       console.error(err);
     } finally {
-      setStep(2);
+      setIsSubmitting(false);
     }
   };
 
   return (
     <>
       <div className="flex flex-col items-center h-screen gap-4 p-12">
-        {isConnected && isAuthenticated && network !== filecoinCalibration.id ? (
+        {isLoggedIn && primaryWallet && network !== filecoinCalibration.id ? (
           <button
             className="btn btn-success"
             onClick={() => switchNetwork({ wallet: primaryWallet, network: filecoinCalibration.id })}
@@ -104,9 +118,9 @@ const FVMPage = () => {
                   <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.5s]"></div>
                 </div>
               </>
-            ) : isConnected && isAuthenticated ? (
+            ) : isLoggedIn && primaryWallet ? (
               <div className="flex flex-col items-center h-screen gap-4 p-12">
-                {/* STEP 1 : Upload File to Lighthouse Storage */}
+                {/* STEP 0 : Upload File to Lighthouse Storage */}
                 {step == 0 && (
                   <div className="flex flex-col items-center justify-center">
                     <h1 className="text-4xl font-bold">Data Storage on FVM</h1>
@@ -163,49 +177,97 @@ const FVMPage = () => {
                   </div>
                 )}
 
-                {/* STEP 2 : Attaching a RaaS worker on-demand to trigger storage deals for files uploaded through the Lighthouse Smart Contract on FVM */}
+                {/* STEP 1 : Attaching a RaaS worker on-demand */}
                 {step == 1 && (
-                  <div>
-                    <div className="w-full p-4 bg-white rounded-lg shadow-md">
-                      <img className="w-full h-40 object-cover rounded-t-lg" alt="Card Image" src={hostedLink} />
-                      <div className="p-4">
-                        <h2 className="text-xl  font-semibold">RaaS - Renew, Repair, Replication</h2>
-                        <p className="text-gray-600">
-                          In the below section we interact with the smart contract on FVM Calibration network by
-                          submitting a CID of the file we uploaded in previous section to the submitRaaS function. This
-                          will create a new deal request that the Lighthouse RaaS Worker will pick up and initiate
-                          deals.
-                        </p>
-                        <div className="flex justify-between items-center mt-4">
-                          <button
-                            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400"
-                            onClick={handleSubmitRaas}
-                          >
-                            Submit Raas
+                  <div className="w-full max-w-2xl p-4 bg-white rounded-lg shadow-md flex flex-col items-center">
+                    <div className="w-full h-64 mb-4 overflow-hidden rounded-lg">
+                      <img className="w-full h-full object-contain" alt="Uploaded File" src={hostedLink} />
+                    </div>
+                    <div className="p-4 text-center">
+                      <h2 className="text-xl font-semibold mb-4">RaaS - Renew, Repair, Replication</h2>
+                      <p className="text-gray-600 mb-6">
+                        In this section we interact with the smart contract on FVM Calibration network by submitting a
+                        CID of the file we uploaded in previous section to the submitRaaS function. This will create a
+                        new deal request that the Lighthouse RaaS Worker will pick up and initiate deals.
+                      </p>
+                      <div className="flex flex-col items-center mt-4">
+                        <button
+                          className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 mb-4"
+                          onClick={handleSubmitRaas}
+                          disabled={isSubmitting || isPending}
+                        >
+                          {isSubmitting ? (
+                            <div className="flex items-center">
+                              <svg
+                                className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                              >
+                                <circle
+                                  className="opacity-25"
+                                  cx="12"
+                                  cy="12"
+                                  r="10"
+                                  stroke="currentColor"
+                                  strokeWidth="4"
+                                ></circle>
+                                <path
+                                  className="opacity-75"
+                                  fill="currentColor"
+                                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                ></path>
+                              </svg>
+                              Submitting...
+                            </div>
+                          ) : isPending ? (
+                            "Waiting for transaction..."
+                          ) : (
+                            "Submit RaaS"
+                          )}
+                        </button>
+                        {isPending && (
+                          <p className="text-sm text-gray-600 mb-4">
+                            Transaction submitted. Waiting for confirmation...
+                          </p>
+                        )}
+                        <a href={hostedLink} target="_blank" rel="noopener noreferrer" className="mt-2">
+                          <button className="btn btn-sm">
+                            View File
+                            <ExternalLinkIcon />
                           </button>
-                          <a href={hostedLink} target="_blank">
-                            <button className="btn btn-neutral btn-outline btn-sm">
-                              View File
-                              <ExternalLinkIcon />
-                            </button>
-                          </a>
-                        </div>
+                        </a>
                       </div>
                     </div>
                   </div>
                 )}
 
-                {/* STEP 3 : View Transaction On Explorer */}
-                {hash && (
-                  <>
-                    <a href={`https://calibration.filfox.info/en/tx/${hash}`} target="_blank">
-                      <button className="btn btn-success">View Transaction On Explorer</button>
-                    </a>
-                  </>
+                {/* STEP 2: Transaction Submitted, Waiting for Hash */}
+                {step == 2 && (
+                  <div className="w-full max-w-2xl p-4 bg-white rounded-lg shadow-md">
+                    <h2 className="text-2xl font-semibold mb-4">Transaction Submitted Successfully</h2>
+                    <p className="text-gray-600 mb-4">
+                      Your RaaS submission has been processed. {!hash && "Waiting for transaction hash..."}
+                    </p>
+                    {hash ? (
+                      <a
+                        href={`https://calibration.filfox.info/en/tx/${hash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <button className="btn btn-success">View Transaction On Explorer</button>
+                      </a>
+                    ) : (
+                      <div className="flex items-center">
+                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-900 mr-2"></div>
+                        <span>Waiting for transaction hash...</span>
+                      </div>
+                    )}
+                  </div>
                 )}
               </div>
             ) : (
-              <button className="btn btn-success" disabled={!isConnected || !isAuthenticated}>
+              <button className="btn btn-success" disabled={!isLoggedIn}>
                 Connect Wallet
               </button>
             )}

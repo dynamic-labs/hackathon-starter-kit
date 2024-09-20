@@ -1,5 +1,18 @@
 export const customEvmNetworks = [
   {
+    blockExplorerUrls: ["https://gnosisscan.io"],
+    chainId: 100,
+    name: "Gnosis Chain",
+    rpcUrls: ["https://rpc.gnosischain.com"],
+    iconUrls: ["https://avatars.githubusercontent.com/u/92709226?s=280&v=4"],
+    nativeCurrency: {
+      name: "XDAI",
+      symbol: "XDAI",
+      decimals: 18,
+    },
+    networkId: 100,
+  },
+  {
     blockExplorerUrls: ["https://filfox.info/en"],
     chainId: 314,
     name: "Filecoin",
